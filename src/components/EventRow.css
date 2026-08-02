@@ -1,0 +1,17 @@
+.event-row {
+   display: flex;
+   flex-direction: row;
+
+   &.details {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-left: 1rem;
+   }
+
+   &.icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+   }
+}

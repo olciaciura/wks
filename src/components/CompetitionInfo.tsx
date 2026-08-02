@@ -1,7 +1,8 @@
 export default function CompetitionInfo() {
    return (
-      <div>
-         <p>templatka na info o zawodach</p>
-      </div>
+      <section className="info-card info-card--accent">
+         <p className="eyebrow eyebrow--compact">Informacje</p>
+         <p className="info-card__text">Templatka na info o zawodach.</p>
+      </section>
    );
 }

@@ -1,43 +1,27 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
-import LoginPage from "./pages/LoginPage";
-import UserPage from "./pages/UserPage";
-import TreningForm from "./pages/TreningForm";
+import AppShell from "./components/AppShell";
 import CompetitionForm from "./pages/CompetitionForm";
+import DashboardPage from "./pages/DashboardPage";
+import EventDetailPage from "./pages/EventDetailPage";
+import LoginPage from "./pages/LoginPage";
+import TreningForm from "./pages/TreningForm";
 
 export default function App() {
    return (
       <Router>
-         <header style={{ padding: 12, borderBottom: "1px solid rgba(0,0,0,0.08)" }}>
-            <nav style={{ display: "flex", gap: 12 }}>
-               <Link to="/login">Login</Link>
-               <Link to="/user">User</Link>
-               <Link to="/trening">Trening</Link>
-               <Link to="/competition">Competition</Link>
-            </nav>
-         </header>
-
-         <main style={{ padding: 20 }}>
-            <Routes>
-               <Route path="/" element={<LoginPage />} />
-               <Route path="/login" element={<LoginPage />} />
-               <Route path="/user" element={<UserPage />} />
+         <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/login" element={<LoginPage mode="login" />} />
+            <Route path="/register" element={<LoginPage mode="register" />} />
+            <Route element={<AppShell />}>
+               <Route path="/dashboard" element={<DashboardPage />} />
+               <Route path="/events/:eventId" element={<EventDetailPage />} />
                <Route path="/trening" element={<TreningForm />} />
                <Route path="/competition" element={<CompetitionForm />} />
-               <Route
-                  path="*"
-                  element={
-                     <div>
-                        <h2>404 — Not Found</h2>
-                        <p>
-                           <Link to="/login">Powrót</Link>
-                        </p>
-                     </div>
-                  }
-               />
-            </Routes>
-         </main>
+            </Route>
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+         </Routes>
       </Router>
    );
 }

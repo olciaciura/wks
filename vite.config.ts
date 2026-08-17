@@ -6,8 +6,10 @@ export default defineConfig({
    plugins: [react()],
    server: {
       proxy: {
-         "/users": "http://localhost:8000",
-         "/events": "http://localhost:8000",
+         // "/users": "http://localhost:8000",
+         // "/events": "http://localhost:8000",
+         "/users": "http://api.zgloszenia-treningi.pl",
+         "/events": "http://api.zgloszenia-treningi.pl",
       },
    },
 });

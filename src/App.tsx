@@ -5,6 +5,7 @@ import CompetitionForm from "./pages/CompetitionForm";
 import DashboardPage from "./pages/DashboardPage";
 import EventDetailPage from "./pages/EventDetailPage";
 import LoginPage from "./pages/LoginPage";
+import ProfilePage from "./pages/ProfilePage";
 import TreningForm from "./pages/TreningForm";
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
             <Route element={<AppShell />}>
                <Route path="/dashboard" element={<DashboardPage />} />
                <Route path="/events/:eventId" element={<EventDetailPage />} />
+               <Route path="/profile" element={<ProfilePage />} />
                <Route path="/trening" element={<TreningForm />} />
                <Route path="/competition" element={<CompetitionForm />} />
             </Route>

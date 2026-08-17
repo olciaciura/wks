@@ -1,9 +1,12 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 import StatusBadge from "../components/StatusBadge";
 import { useAuth } from "../context/AuthContext";
 import { getEventDetail, submitEventResponse } from "../lib/api";
 import type { EventDetailDto, EventResponsePayload } from "../types/backend";
+
+type TransportChoice = "" | "needs" | "self" | "can_take";
+type YesNoChoice = "" | "tak" | "nie";
 
 export default function EventDetailPage() {
    const { eventId } = useParams();
@@ -12,6 +15,13 @@ export default function EventDetailPage() {
    const [isLoading, setIsLoading] = useState(true);
    const [errorMessage, setErrorMessage] = useState<string | null>(null);
    const [submitMessage, setSubmitMessage] = useState<string | null>(null);
+
+   const [transportChoice, setTransportChoice] = useState<TransportChoice>("");
+   const [accommodationChoice, setAccommodationChoice] = useState<YesNoChoice>("");
+   const [foodChoice, setFoodChoice] = useState<YesNoChoice>("");
+   const [vegeChoice, setVegeChoice] = useState<YesNoChoice>("");
+
+   const runsContainerRef = useRef<HTMLDivElement>(null);
 
    useEffect(() => {
       let isMounted = true;
@@ -46,6 +56,39 @@ export default function EventDetailPage() {
       };
    }, [currentUser, eventId]);
 
+   useEffect(() => {
+      if (!eventDetail?.user_response) {
+         return;
+      }
+
+      const response = eventDetail.user_response;
+
+      if (response.can_take_people > 0) {
+         setTransportChoice("can_take");
+      } else if (response.self_transport) {
+         setTransportChoice("self");
+      } else if (response.needs_transport) {
+         setTransportChoice("needs");
+      }
+
+      if (eventDetail.event.type === "competition" && response.competition) {
+         setAccommodationChoice(response.competition.needs_accommodation ? "tak" : "nie");
+         setFoodChoice(response.competition.wants_food ? "tak" : "nie");
+         setVegeChoice(response.competition.wants_vege ? "tak" : "nie");
+      }
+   }, [eventDetail]);
+
+   function selectAllRuns() {
+      const container = runsContainerRef.current;
+      if (!container) {
+         return;
+      }
+
+      container.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((input) => {
+         input.checked = true;
+      });
+   }
+
    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
       event.preventDefault();
 
@@ -56,10 +99,10 @@ export default function EventDetailPage() {
       const formData = new FormData(event.currentTarget);
       const payload: EventResponsePayload = {
          user_id: currentUser.user_id,
-         status: String(formData.get("status") ?? "pending") as EventResponsePayload["status"],
-         needs_transport: formData.get("needs_transport") === "on",
-         self_transport: formData.get("self_transport") === "on",
-         can_take_people: Number(formData.get("can_take_people") ?? 0) || 0,
+         status: "filled",
+         needs_transport: transportChoice === "needs",
+         self_transport: transportChoice === "self",
+         can_take_people: transportChoice === "can_take" ? Number(formData.get("can_take_people") ?? 0) || 0 : 0,
          comment: String(formData.get("comment") ?? ""),
          training: null,
          competition: null,
@@ -73,9 +116,9 @@ export default function EventDetailPage() {
 
       if (eventDetail.event.type === "competition") {
          payload.competition = {
-            needs_accommodation: formData.get("needs_accommodation") === "on",
-            wants_food: formData.get("wants_food") === "on",
-            wants_vege: formData.get("wants_vege") === "on",
+            needs_accommodation: accommodationChoice === "tak",
+            wants_food: foodChoice === "tak",
+            wants_vege: foodChoice === "tak" && vegeChoice === "tak",
             run_selections:
                eventDetail.options.runs?.map((run) => ({
                   run_id: run.id,
@@ -109,7 +152,7 @@ export default function EventDetailPage() {
    }
 
    const { event, options, user_response } = eventDetail;
-   const responseBadge = mapResponseLabel(user_response?.status);
+   const responseTone = mapResponseLabel(user_response?.status);
 
    return (
       <section className="detail-page page-stack">
@@ -120,188 +163,171 @@ export default function EventDetailPage() {
                </Link>
                <div className="event-card__badges">
                   <StatusBadge tone={event.type}>{event.type}</StatusBadge>
-                  <StatusBadge tone={event.status}>{event.status}</StatusBadge>
-                  <StatusBadge tone={responseBadge}>{responseBadge}</StatusBadge>
                </div>
             </div>
 
             <div className="page-stack page-stack--compact">
-               <p className="eyebrow">Szczegóły wydarzenia</p>
                <h1>{event.title}</h1>
-               <p className="page-copy">{event.description}</p>
             </div>
 
             <div className="detail-hero__grid">
                <div>
-                  <span className="event-card__label">Termin</span>
-                  <p>
-                     {event.date_from} - {event.date_to}
+                  <p className="detail-hero__date">
+                     {formatDate(event.date_from)} – {formatDate(event.date_to)}
                   </p>
                </div>
                <div>
-                  <span className="event-card__label">Zapis</span>
-                  <p>
-                     {event.signup_open_date} - {event.signup_close_date}
-                  </p>
-               </div>
-               <div>
-                  <span className="event-card__label">Status</span>
-                  <p>{event.status}</p>
+                  <span className="event-card__label">Zapisy do</span>
+                  <p className="detail-hero__date">{formatDate(event.signup_close_date)}</p>
+                  <StatusBadge tone={responseTone}>{mapResponseDisplay(responseTone)}</StatusBadge>
                </div>
             </div>
          </header>
 
          <div className="detail-grid">
-            <article className="detail-panel">
-               <p className="eyebrow eyebrow--compact">{event.type === "training" ? "Trening" : "Competition"}</p>
-               <h2>{event.type === "training" ? "Dane treningu" : "Dane zawodów"}</h2>
+            <details className="detail-panel info-collapsible">
+               <summary className="info-collapsible__summary">Dodatkowe informacje</summary>
 
-               {event.type === "training" ? (
-                  <div className="detail-list">
-                     <div>
-                        <span>Spotkanie</span>
-                        <p>
-                           {options.meeting_time ?? "Brak danych"} · {options.meeting_location_desc ?? "Brak danych"}
-                        </p>
-                     </div>
-                     <div>
-                        <span>Start</span>
-                        <p>
-                           {options.start_time ?? "Brak danych"} · {options.start_location_desc ?? "Brak danych"}
-                        </p>
-                     </div>
-                     <div>
-                        <span>Transport</span>
-                        <p>{options.transport_available ? "Dostępny" : "Brak"}</p>
-                     </div>
-                     <div>
-                        <span>Typ</span>
-                        <p>{options.training_type ?? "-"}</p>
-                     </div>
-                     <div>
-                        <span>Trasy</span>
-                        <ul className="detail-list__items">
-                           {options.training_routes?.length ? (
-                              options.training_routes.map((route) => (
-                                 <li key={route.id ?? route.name}>
-                                    <strong>{route.name}</strong>
-                                    <span>{route.description ?? route.distance ?? ""}</span>
+               <div className="info-collapsible__content">
+                  {event.type === "training" ? (
+                     <div className="detail-list">
+                        <div>
+                           <span>Spotkanie</span>
+                           <p>
+                              {options.meeting_time ?? "Brak danych"} ·{" "}
+                              {options.meeting_location_desc ?? "Brak danych"}
+                           </p>
+                        </div>
+                        <div>
+                           <span>Start</span>
+                           <p>
+                              {options.start_time ?? "Brak danych"} · {options.start_location_desc ?? "Brak danych"}
+                           </p>
+                        </div>
+                        <div>
+                           <span>Transport</span>
+                           <p>{options.transport_available ? "Dostępny" : "Brak"}</p>
+                        </div>
+                        <div>
+                           <span>Typ</span>
+                           <p>{options.training_type ?? "-"}</p>
+                        </div>
+                        <div>
+                           <span>Trasy</span>
+                           <ul className="detail-list__items">
+                              {options.training_routes?.length ? (
+                                 options.training_routes.map((route) => (
+                                    <li key={route.id ?? route.name}>
+                                       <strong>{route.name}</strong>
+                                       <span>{route.description ?? route.distance ?? ""}</span>
+                                    </li>
+                                 ))
+                              ) : (
+                                 <li>
+                                    <strong>Brak tras</strong>
+                                    <span>Backend nie zwrócił jeszcze tras</span>
                                  </li>
-                              ))
-                           ) : (
-                              <li>
-                                 <strong>Brak tras</strong>
-                                 <span>Backend nie zwrócił jeszcze tras</span>
-                              </li>
-                           )}
-                        </ul>
+                              )}
+                           </ul>
+                        </div>
                      </div>
-                  </div>
-               ) : null}
+                  ) : null}
 
-               {event.type === "competition" ? (
-                  <div className="detail-list">
-                     <div>
-                        <span>Nazwa</span>
-                        <p>{event.title}</p>
+                  {event.type === "competition" ? (
+                     <div className="detail-list">
+                        <div>
+                           <span>Nocleg</span>
+                           <p>{options.accomodation_available ? "Tak" : "Nie"}</p>
+                        </div>
+                        <div>
+                           <span>Transport</span>
+                           <p>{options.transport_available ? "Dostępny" : "Brak"}</p>
+                        </div>
+                        <div>
+                           <span>Wyżywienie</span>
+                           <p>
+                              {options.food_available ? "Tak" : "Nie"} ·{" "}
+                              {options.food_vege_available ? "wege" : "standard"}
+                           </p>
+                        </div>
+                        <div>
+                           <span>Posiłki</span>
+                           <ul className="detail-list__items">
+                              {options.food_schedule?.map((entry) => (
+                                 <li key={entry.date}>
+                                    <strong>{formatDate(entry.date)}</strong>
+                                    <span>
+                                       {entry.breakfast ? "Śniadanie " : ""}
+                                       {entry.lunch ? "Lunch " : ""}
+                                       {entry.dinner ? "Obiad " : ""}
+                                       {entry.supper ? "Kolacja" : ""}
+                                    </span>
+                                 </li>
+                              ))}
+                           </ul>
+                        </div>
                      </div>
-                     <div>
-                        <span>Nocleg</span>
-                        <p>{options.accomodation_available ? "Tak" : "Nie"}</p>
-                     </div>
-                     <div>
-                        <span>Transport</span>
-                        <p>{options.transport_available ? "Dostępny" : "Brak"}</p>
-                     </div>
-                     <div>
-                        <span>Wyżywienie</span>
-                        <p>
-                           {options.food_available ? "Tak" : "Nie"} ·{" "}
-                           {options.food_vege_available ? "wege" : "standard"}
-                        </p>
-                     </div>
-                     <div>
-                        <span>Serie</span>
-                        <p>{options.series_signup ? "Tak" : "Nie"}</p>
-                     </div>
-                     <div>
-                        <span>Biegi</span>
-                        <ul className="detail-list__items">
-                           {options.runs?.map((run) => (
-                              <li key={run.id}>
-                                 <strong>{run.name}</strong>
-                                 <span>{run.run_date}</span>
-                              </li>
-                           ))}
-                        </ul>
-                     </div>
-                     <div>
-                        <span>Posiłki</span>
-                        <ul className="detail-list__items">
-                           {options.food_schedule?.map((entry) => (
-                              <li key={entry.date}>
-                                 <strong>{entry.date}</strong>
-                                 <span>
-                                    {entry.breakfast ? "Śniadanie " : ""}
-                                    {entry.lunch ? "Lunch " : ""}
-                                    {entry.dinner ? "Obiad " : ""}
-                                    {entry.supper ? "Kolacja" : ""}
-                                 </span>
-                              </li>
-                           ))}
-                        </ul>
-                     </div>
-                  </div>
-               ) : null}
-            </article>
+                  ) : null}
+               </div>
+            </details>
 
             <form className="detail-panel response-form" onSubmit={handleSubmit}>
                <p className="eyebrow eyebrow--compact">Twoja odpowiedź</p>
                <h2>Wyślij odpowiedź</h2>
 
-               <label className="field-group">
-                  <span className="field-label">Status odpowiedzi</span>
-                  <select
-                     className="field-input field-select"
-                     name="status"
-                     defaultValue={user_response?.status ?? "pending"}
-                  >
-                     <option value="pending">pending</option>
-                     <option value="filled">filled</option>
-                     <option value="rejected">rejected</option>
-                  </select>
-               </label>
+               <div className="field-group">
+                  <span className="field-label">Transport</span>
+                  <div className="radio-group">
+                     <label className="radio-row">
+                        <input
+                           className="radio-row__input"
+                           type="radio"
+                           name="transport_choice"
+                           value="needs"
+                           checked={transportChoice === "needs"}
+                           onChange={() => setTransportChoice("needs")}
+                        />
+                        <span className="radio-row__label">Potrzebuję transportu</span>
+                     </label>
 
-               <label className="checkbox-row">
-                  <input
-                     className="checkbox-row__input"
-                     type="checkbox"
-                     name="needs_transport"
-                     defaultChecked={user_response?.needs_transport ?? false}
-                  />
-                  <span className="checkbox-row__label">Potrzebuję transportu</span>
-               </label>
+                     <label className="radio-row">
+                        <input
+                           className="radio-row__input"
+                           type="radio"
+                           name="transport_choice"
+                           value="self"
+                           checked={transportChoice === "self"}
+                           onChange={() => setTransportChoice("self")}
+                        />
+                        <span className="radio-row__label">Jadę samodzielnie</span>
+                     </label>
 
-               <label className="checkbox-row">
-                  <input
-                     className="checkbox-row__input"
-                     type="checkbox"
-                     name="self_transport"
-                     defaultChecked={user_response?.self_transport ?? false}
-                  />
-                  <span className="checkbox-row__label">Jadę samodzielnie</span>
-               </label>
+                     <label className="radio-row">
+                        <input
+                           className="radio-row__input"
+                           type="radio"
+                           name="transport_choice"
+                           value="can_take"
+                           checked={transportChoice === "can_take"}
+                           onChange={() => setTransportChoice("can_take")}
+                        />
+                        <span className="radio-row__label">Mogę kogoś zabrać</span>
+                     </label>
 
-               <label className="field-group">
-                  <span className="field-label">Ile osób mogę zabrać</span>
-                  <input
-                     className="field-input"
-                     type="number"
-                     name="can_take_people"
-                     min={0}
-                     defaultValue={user_response?.can_take_people ?? 0}
-                  />
-               </label>
+                     {transportChoice === "can_take" ? (
+                        <label className="field-group field-group--nested">
+                           <span className="field-label">Ile osób mogę zabrać</span>
+                           <input
+                              className="field-input"
+                              type="number"
+                              name="can_take_people"
+                              min={1}
+                              defaultValue={user_response?.can_take_people || 1}
+                           />
+                        </label>
+                     ) : null}
+                  </div>
+               </div>
 
                {event.type === "training" ? (
                   <label className="field-group">
@@ -321,55 +347,128 @@ export default function EventDetailPage() {
                ) : null}
 
                {event.type === "competition" ? (
-                  <div className="response-grid">
-                     <label className="checkbox-row">
-                        <input
-                           className="checkbox-row__input"
-                           type="checkbox"
-                           name="needs_accommodation"
-                           defaultChecked={user_response?.competition?.needs_accommodation ?? false}
-                        />
-                        <span className="checkbox-row__label">Nocleg</span>
-                     </label>
-
-                     <label className="checkbox-row">
-                        <input
-                           className="checkbox-row__input"
-                           type="checkbox"
-                           name="wants_food"
-                           defaultChecked={user_response?.competition?.wants_food ?? false}
-                        />
-                        <span className="checkbox-row__label">Wyżywienie</span>
-                     </label>
-
-                     <label className="checkbox-row">
-                        <input
-                           className="checkbox-row__input"
-                           type="checkbox"
-                           name="wants_vege"
-                           defaultChecked={user_response?.competition?.wants_vege ?? false}
-                        />
-                        <span className="checkbox-row__label">Wegetariańskie</span>
-                     </label>
-
-                     {options.runs?.map((run) => {
-                        const isChecked = user_response?.competition?.run_selections?.some(
-                           (selection) => selection.run_id === run.id && selection.participates,
-                        );
-
-                        return (
-                           <label key={run.id} className="checkbox-row">
+                  <>
+                     <div className="field-group">
+                        <span className="field-label">Czy nocujesz z klubem?</span>
+                        <div className="radio-group radio-group--inline">
+                           <label className="radio-row radio-row--compact">
                               <input
-                                 className="checkbox-row__input"
-                                 type="checkbox"
-                                 name={`run_${run.id}`}
-                                 defaultChecked={Boolean(isChecked)}
+                                 className="radio-row__input"
+                                 type="radio"
+                                 name="needs_accommodation_choice"
+                                 value="tak"
+                                 checked={accommodationChoice === "tak"}
+                                 onChange={() => setAccommodationChoice("tak")}
                               />
-                              <span className="checkbox-row__label">{run.name}</span>
+                              <span className="radio-row__label">Tak</span>
                            </label>
-                        );
-                     })}
-                  </div>
+                           <label className="radio-row radio-row--compact">
+                              <input
+                                 className="radio-row__input"
+                                 type="radio"
+                                 name="needs_accommodation_choice"
+                                 value="nie"
+                                 checked={accommodationChoice === "nie"}
+                                 onChange={() => setAccommodationChoice("nie")}
+                              />
+                              <span className="radio-row__label">Nie</span>
+                           </label>
+                        </div>
+                     </div>
+
+                     <div className="field-group">
+                        <span className="field-label">Wyżywienie</span>
+                        <div className="radio-group radio-group--inline">
+                           <label className="radio-row radio-row--compact">
+                              <input
+                                 className="radio-row__input"
+                                 type="radio"
+                                 name="wants_food_choice"
+                                 value="tak"
+                                 checked={foodChoice === "tak"}
+                                 onChange={() => setFoodChoice("tak")}
+                              />
+                              <span className="radio-row__label">Tak</span>
+                           </label>
+                           <label className="radio-row radio-row--compact">
+                              <input
+                                 className="radio-row__input"
+                                 type="radio"
+                                 name="wants_food_choice"
+                                 value="nie"
+                                 checked={foodChoice === "nie"}
+                                 onChange={() => {
+                                    setFoodChoice("nie");
+                                    setVegeChoice("");
+                                 }}
+                              />
+                              <span className="radio-row__label">Nie</span>
+                           </label>
+                        </div>
+                     </div>
+
+                     {foodChoice === "tak" ? (
+                        <div className="field-group">
+                           <span className="field-label">Wegetariańskie?</span>
+                           <div className="radio-group radio-group--inline">
+                              <label className="radio-row radio-row--compact">
+                                 <input
+                                    className="radio-row__input"
+                                    type="radio"
+                                    name="wants_vege_choice"
+                                    value="tak"
+                                    checked={vegeChoice === "tak"}
+                                    onChange={() => setVegeChoice("tak")}
+                                 />
+                                 <span className="radio-row__label">Tak</span>
+                              </label>
+                              <label className="radio-row radio-row--compact">
+                                 <input
+                                    className="radio-row__input"
+                                    type="radio"
+                                    name="wants_vege_choice"
+                                    value="nie"
+                                    checked={vegeChoice === "nie"}
+                                    onChange={() => setVegeChoice("nie")}
+                                 />
+                                 <span className="radio-row__label">Nie</span>
+                              </label>
+                           </div>
+                        </div>
+                     ) : null}
+
+                     {options.runs?.length ? (
+                        <div className="field-group">
+                           <div className="field-group__header">
+                              <span className="field-label">Starty</span>
+                              <button type="button" className="ghost-btn ghost-btn--small" onClick={selectAllRuns}>
+                                 Wszystko
+                              </button>
+                           </div>
+                           <div className="radio-group" ref={runsContainerRef}>
+                              {options.runs.map((run) => {
+                                 const isChecked = user_response?.competition?.run_selections?.some(
+                                    (selection) => selection.run_id === run.id && selection.participates,
+                                 );
+
+                                 return (
+                                    <label key={run.id} className="checkbox-row">
+                                       <input
+                                          className="checkbox-row__input"
+                                          type="checkbox"
+                                          name={`run_${run.id}`}
+                                          defaultChecked={Boolean(isChecked)}
+                                       />
+                                       <span className="checkbox-row__label">
+                                          {run.name} · {formatDate(run.run_date)}
+                                       </span>
+                                    </label>
+                                 );
+                              })}
+                           </div>
+                        </div>
+                     ) : null}
+                  </>
                ) : null}
 
                <label className="field-group">
@@ -378,8 +477,7 @@ export default function EventDetailPage() {
                      className="field-input field-textarea"
                      name="comment"
                      rows={4}
-                     defaultValue={user_response?.comment ?? ""}
-                     placeholder="Np. jadę, potrzebuję transportu, noclegu i jedzenia."
+                     placeholder="Tu wpisz uwagi odnośnie noclegu, wyżywienia lub startów."
                   />
                </label>
 
@@ -394,6 +492,19 @@ export default function EventDetailPage() {
    );
 }
 
+function formatDate(value?: string | null) {
+   if (!value) {
+      return "Brak danych";
+   }
+
+   const date = new Date(value);
+   if (Number.isNaN(date.getTime())) {
+      return value;
+   }
+
+   return date.toLocaleDateString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
 function mapResponseLabel(value?: string | null) {
    if (!value || value === "pending") {
       return "nieuzupelnione";
@@ -405,3 +516,16 @@ function mapResponseLabel(value?: string | null) {
 
    return "nie_jade";
 }
+
+function mapResponseDisplay(tone: string) {
+   if (tone === "uzupelnione") {
+      return "uzupełnione";
+   }
+
+   if (tone === "nieuzupelnione") {
+      return "do uzupełnienia";
+   }
+
+   return "odrzucone";
+}
+

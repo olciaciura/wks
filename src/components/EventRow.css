@@ -1,17 +1,223 @@
+.event-row-wrapper {
+   position: relative;
+   overflow: hidden;
+   border-radius: 16px;
+   touch-action: pan-y;
+}
+
+.event-row-action {
+   position: absolute;
+   inset: 0;
+   display: flex;
+   align-items: center;
+   gap: 0.4rem;
+   padding: 0 1.25rem;
+   font-weight: 700;
+   font-size: 0.95rem;
+   color: #fff;
+   border-radius: 16px;
+   opacity: 0;
+   transition: opacity 0.2s ease;
+   pointer-events: none;
+
+   &.open {
+      justify-content: flex-start;
+      background: var(--color-primary);
+   }
+
+   &.reject {
+      justify-content: flex-end;
+      background: #e2504f;
+   }
+}
+
 .event-row {
+   position: relative;
+   z-index: 1;
    display: flex;
    flex-direction: row;
+   align-items: stretch;
+   gap: 1rem;
+   cursor: pointer;
+   user-select: none;
+   touch-action: pan-y;
+   transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
 
-   &.details {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      margin-left: 1rem;
+   &.card {
+      padding: 0.85rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      color: inherit;
+
+      &:hover {
+         transform: translateY(-2px);
+         box-shadow: 0 28px 64px rgba(17, 17, 17, 0.16);
+      }
    }
 
    &.icon {
+      flex: 0 0 auto;
+      align-self: center;
+      width: 3.75rem;
+      height: 65%;
+      min-height: 3rem;
       display: flex;
       justify-content: center;
       align-items: center;
+      color: var(--accent);
+
+      svg {
+         width: 48px;
+         height: 48px;
+      }
+   }
+
+   &.details {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      text-align: left;
+      gap: 0.4rem;
+
+      .name {
+         font-size: 1.2rem;
+         font-weight: 700;
+         color: var(--text-h);
+         overflow: hidden;
+         text-overflow: ellipsis;
+         white-space: nowrap;
+         max-width: 100%;
+      }
+
+      .meta {
+         font-size: 0.85rem;
+         color: var(--text);
+         opacity: 0.8;
+      }
+   }
+
+   &.due {
+      flex: 0 0 auto;
+      min-width: 4.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      .due-number {
+         font-size: 1.9rem;
+         font-weight: 800;
+         line-height: 1;
+         color: var(--text-h);
+      }
+
+      .due-label {
+         font-size: 0.65rem;
+         font-weight: 600;
+         text-transform: uppercase;
+         letter-spacing: 0.05em;
+         color: var(--text);
+         opacity: 0.7;
+      }
+
+      .due-closed {
+         font-size: 1.15rem;
+         font-weight: 800;
+         text-transform: uppercase;
+         letter-spacing: 0.03em;
+         color: var(--text);
+         opacity: 0.55;
+      }
+
+      &.urgent {
+         .due-number {
+            font-size: 2.4rem;
+            color: var(--color-accent);
+         }
+
+         .due-label {
+            color: var(--color-accent);
+            opacity: 1;
+            font-weight: 700;
+         }
+      }
+   }
+}
+
+@media (max-width: 640px) {
+   .event-row {
+      gap: 0.6rem;
+
+      &.card {
+         padding: 0.65rem 0.75rem;
+         border-radius: 14px;
+      }
+
+      &.icon {
+         width: 2.75rem;
+         min-height: 2.5rem;
+
+         svg {
+            width: 32px;
+            height: 32px;
+         }
+      }
+
+      &.details {
+         gap: 0.25rem;
+
+         .name {
+            font-size: 1rem;
+         }
+
+         .meta {
+            font-size: 0.75rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+         }
+      }
+
+      &.due {
+         min-width: 3.5rem;
+
+         .due-number {
+            font-size: 1.5rem;
+         }
+
+         .due-label {
+            font-size: 0.58rem;
+         }
+
+         .due-closed {
+            font-size: 0.9rem;
+         }
+
+         &.urgent .due-number {
+            font-size: 1.9rem;
+         }
+      }
+   }
+}
+
+@media (max-width: 380px) {
+   .event-row {
+      &.details .meta {
+         font-size: 0.7rem;
+      }
+
+      &.due {
+         min-width: 3rem;
+      }
    }
 }

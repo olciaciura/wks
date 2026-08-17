@@ -37,16 +37,8 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
    return (
       <section className="auth-screen">
          <form className="auth-card page-stack" onSubmit={handleSubmit}>
-            <div className="page-stack page-stack--compact">
-               <p className="eyebrow">{isRegister ? "Nowe konto" : "Witaj"}</p>
-               <div>
-                  <h1>{isRegister ? "Rejestracja" : "Logowanie"}</h1>
-                  <p className="page-copy">
-                     {isRegister
-                        ? "Załóż konto i przejdź od razu do listy wydarzeń."
-                        : "Wejdź do aplikacji i przejdź do swojego panelu."}
-                  </p>
-               </div>
+            <div className="auth-brand">
+               <span className="auth-brand__name">OriSuS</span>
             </div>
 
             <label className="field-group">
@@ -76,11 +68,6 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
                   <label className="field-group">
                      <span className="field-label">Płeć</span>
                      <input className="field-input" type="text" name="gender" placeholder="np. female / male / other" />
-                  </label>
-
-                  <label className="field-group">
-                     <span className="field-label">Kategoria</span>
-                     <input className="field-input" type="text" name="category" placeholder="np. M21" />
                   </label>
                </>
             ) : null}

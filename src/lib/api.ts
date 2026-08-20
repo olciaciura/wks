@@ -79,3 +79,77 @@ export async function createEvent(payload: CreateEventPayload): Promise<unknown>
 }
 
 export type { CurrentUser } from "../types/backend";
+
+export async function getEventResponses(eventId: string): Promise<EventResponsesDto> {
+   return apiRequest<EventResponsesDto>(`/events/${eventId}/all_responses`);
+}
+
+export interface EventResponsesDto {
+   event: {
+      id: string;
+      title: string;
+      type: "training" | "competition";
+      date_from: string;
+      date_to: string;
+   };
+
+   statistics: {
+      participants: number;
+      needs_transport: number;
+      transport_places_offered: number;
+
+      needs_accommodation?: number;
+      wants_food?: number;
+      wants_vege?: number;
+
+      routes?: {
+         route_id: string;
+         route_name: string;
+         participants: number;
+      }[];
+
+      runs?: {
+         run_id: string;
+         run_name: string;
+         participants: number;
+      }[];
+   };
+
+   users: EventResponseUserDto[];
+}
+
+export interface EventResponseUserDto {
+   user_id: string;
+   name: string;
+   email: string;
+
+   status: string;
+
+   needs_transport: boolean;
+   self_transport: boolean;
+   can_take_people: number;
+
+   comment?: string;
+   submitted_at?: string;
+
+   training?: {
+      selected_route?: {
+         id: string;
+         name: string;
+         distance: number;
+      };
+   };
+
+   competition?: {
+      needs_accommodation: boolean;
+      wants_food: boolean;
+      wants_vege: boolean;
+
+      runs: {
+         run_id: string;
+         run_name: string;
+         run_date: string;
+         participates: boolean;
+      }[];
+   };
+}

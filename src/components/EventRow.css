@@ -221,3 +221,25 @@
       }
    }
 }
+
+.event-row-results {
+   flex: 0 0 auto;
+   align-self: center;
+
+   padding: 0.65rem 1rem;
+
+   border: 1px solid var(--border);
+   border-radius: 12px;
+
+   background: var(--color-primary);
+   color: white;
+
+   font-size: 0.85rem;
+   font-weight: 700;
+
+   cursor: pointer;
+}
+
+.event-row-results:hover {
+   opacity: 0.9;
+}

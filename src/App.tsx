@@ -7,6 +7,7 @@ import EventDetailPage from "./pages/EventDetailPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import TreningForm from "./pages/TreningForm";
+import OrganizerEventResponsesPage from "./pages/OrganizerEventResponsesPage";
 
 export default function App() {
    return (
@@ -21,6 +22,7 @@ export default function App() {
                <Route path="/profile" element={<ProfilePage />} />
                <Route path="/trening" element={<TreningForm />} />
                <Route path="/competition" element={<CompetitionForm />} />
+               <Route path="/results/:eventId" element={<OrganizerEventResponsesPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
          </Routes>

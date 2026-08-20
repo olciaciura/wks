@@ -23,10 +23,7 @@ export default function DashboardPage() {
          try {
             setIsLoading(true);
             setErrorMessage(null);
-            const data =
-               currentUser.role === "user"
-                  ? await getEventsForUser(currentUser.user_id)
-                  : await getAllEventsForUser(currentUser.user_id);
+            const data = await getAllEventsForUser(currentUser.user_id);
             if (isMounted) {
                setEvents(data);
             }
@@ -103,22 +100,20 @@ export default function DashboardPage() {
          {errorMessage ? <div className="page-card page-copy">{errorMessage}</div> : null}
 
          <div className="event-list">
-            {visibleEvents.flatMap((event) =>
-               Array.from({ length: 5 }, (_, index) => (
-                  <EventRow
-                     key={`${event.event_id}-${index}`}
-                     id={event.event_id}
-                     name={event.event_name}
-                     type={event.event_type}
-                     status={event.user_response_status}
-                     eventStartDate={event.event_start_date || "22-08-2026"}
-                     eventEndDate={event.event_end_date || "23-08-2026"}
-                     dueDate={event.signup_close_date}
-                     newInfo={false}
-                     onRejected={handleRejected}
-                  />
-               )),
-            )}
+            {visibleEvents.flatMap((event) => (
+               <EventRow
+                  key={`${event.event_id}`}
+                  id={event.event_id}
+                  name={event.event_name}
+                  type={event.event_type}
+                  status={event.user_response_status}
+                  eventStartDate={event.date_from}
+                  eventEndDate={event.date_to}
+                  dueDate={event.signup_close_date}
+                  newInfo={false}
+                  onRejected={handleRejected}
+               />
+            ))}
          </div>
       </section>
    );

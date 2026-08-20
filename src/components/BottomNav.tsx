@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { FiHome, FiUser } from "react-icons/fi";
+import { FiHome, FiUser, FiPlus } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
 const links = [
@@ -23,6 +23,36 @@ export default function BottomNav() {
                aria-label={onProfile ? "Dashboard" : "Profil"}
             >
                {onProfile ? <FiHome size={48} /> : <FiUser size={48} />}
+            </NavLink>
+         </nav>
+      );
+   }
+
+   if (currentUser?.role === "trainer" || currentUser?.role === "admin") {
+      return (
+         <nav className="bottom-nav bottom-nav--icon" aria-label="Glowna nawigacja">
+            <NavLink
+               to="/profile"
+               className={({ isActive }) => `bottom-nav__icon-link${isActive ? " is-active" : ""}`}
+               aria-label="Profil"
+            >
+               <FiUser size={40} />
+            </NavLink>
+
+            <NavLink
+               to="/dashboard"
+               className={({ isActive }) => `bottom-nav__icon-link${isActive ? " is-active" : ""}`}
+               aria-label="Dashboard"
+            >
+               <FiHome size={40} />
+            </NavLink>
+
+            <NavLink
+               to="/trening"
+               className={({ isActive }) => `bottom-nav__icon-link${isActive ? " is-active" : ""}`}
+               aria-label="Dodaj trening"
+            >
+               <FiPlus size={40} />
             </NavLink>
          </nav>
       );

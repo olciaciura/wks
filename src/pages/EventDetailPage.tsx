@@ -173,7 +173,8 @@ export default function EventDetailPage() {
             <div className="detail-hero__grid">
                <div>
                   <p className="detail-hero__date">
-                     {formatDate(event.date_from)} – {formatDate(event.date_to)}
+                     {formatDate(event.date_from)}{" "}
+                     {event.date_from != event.date_to && `– ${formatDate(event.date_to)}`}
                   </p>
                </div>
                <div>
@@ -194,8 +195,7 @@ export default function EventDetailPage() {
                         <div>
                            <span>Spotkanie</span>
                            <p>
-                              {options.meeting_time ?? "Brak danych"} ·{" "}
-                              {options.meeting_location_desc ?? "Brak danych"}
+                              {options.meeting_time ?? "Brak danych"} · {options.meeting_location_desc ?? "Brak danych"}
                            </p>
                         </div>
                         <div>
@@ -215,8 +215,8 @@ export default function EventDetailPage() {
                         <div>
                            <span>Trasy</span>
                            <ul className="detail-list__items">
-                              {options.training_routes?.length ? (
-                                 options.training_routes.map((route) => (
+                              {options.routes?.length ? (
+                                 options.routes.map((route) => (
                                     <li key={route.id ?? route.name}>
                                        <strong>{route.name}</strong>
                                        <span>{route.description ?? route.distance ?? ""}</span>
@@ -276,57 +276,61 @@ export default function EventDetailPage() {
                <h2>Wyślij odpowiedź</h2>
 
                <div className="field-group">
-                  <span className="field-label">Transport</span>
-                  <div className="radio-group">
-                     <label className="radio-row">
-                        <input
-                           className="radio-row__input"
-                           type="radio"
-                           name="transport_choice"
-                           value="needs"
-                           checked={transportChoice === "needs"}
-                           onChange={() => setTransportChoice("needs")}
-                        />
-                        <span className="radio-row__label">Potrzebuję transportu</span>
-                     </label>
+                  {options.transport_available && (
+                     <>
+                        <span className="field-label">Transport</span>
+                        <div className="radio-group">
+                           <label className="radio-row">
+                              <input
+                                 className="radio-row__input"
+                                 type="radio"
+                                 name="transport_choice"
+                                 value="needs"
+                                 checked={transportChoice === "needs"}
+                                 onChange={() => setTransportChoice("needs")}
+                              />
+                              <span className="radio-row__label">Potrzebuję transportu</span>
+                           </label>
 
-                     <label className="radio-row">
-                        <input
-                           className="radio-row__input"
-                           type="radio"
-                           name="transport_choice"
-                           value="self"
-                           checked={transportChoice === "self"}
-                           onChange={() => setTransportChoice("self")}
-                        />
-                        <span className="radio-row__label">Jadę samodzielnie</span>
-                     </label>
+                           <label className="radio-row">
+                              <input
+                                 className="radio-row__input"
+                                 type="radio"
+                                 name="transport_choice"
+                                 value="self"
+                                 checked={transportChoice === "self"}
+                                 onChange={() => setTransportChoice("self")}
+                              />
+                              <span className="radio-row__label">Jadę samodzielnie</span>
+                           </label>
 
-                     <label className="radio-row">
-                        <input
-                           className="radio-row__input"
-                           type="radio"
-                           name="transport_choice"
-                           value="can_take"
-                           checked={transportChoice === "can_take"}
-                           onChange={() => setTransportChoice("can_take")}
-                        />
-                        <span className="radio-row__label">Mogę kogoś zabrać</span>
-                     </label>
+                           <label className="radio-row">
+                              <input
+                                 className="radio-row__input"
+                                 type="radio"
+                                 name="transport_choice"
+                                 value="can_take"
+                                 checked={transportChoice === "can_take"}
+                                 onChange={() => setTransportChoice("can_take")}
+                              />
+                              <span className="radio-row__label">Mogę kogoś zabrać</span>
+                           </label>
 
-                     {transportChoice === "can_take" ? (
-                        <label className="field-group field-group--nested">
-                           <span className="field-label">Ile osób mogę zabrać</span>
-                           <input
-                              className="field-input"
-                              type="number"
-                              name="can_take_people"
-                              min={1}
-                              defaultValue={user_response?.can_take_people || 1}
-                           />
-                        </label>
-                     ) : null}
-                  </div>
+                           {transportChoice === "can_take" ? (
+                              <label className="field-group field-group--nested">
+                                 <span className="field-label">Ile osób mogę zabrać</span>
+                                 <input
+                                    className="field-input"
+                                    type="number"
+                                    name="can_take_people"
+                                    min={1}
+                                    defaultValue={user_response?.can_take_people || 1}
+                                 />
+                              </label>
+                           ) : null}
+                        </div>
+                     </>
+                  )}
                </div>
 
                {event.type === "training" ? (
@@ -335,9 +339,9 @@ export default function EventDetailPage() {
                      <select
                         className="field-input field-select"
                         name="selected_route_id"
-                        defaultValue={options.training_routes?.[0]?.id ?? ""}
+                        defaultValue={options.routes?.[0]?.id ?? ""}
                      >
-                        {options.training_routes?.map((route) => (
+                        {options.routes?.map((route) => (
                            <option key={route.id ?? route.name} value={route.id ?? route.name}>
                               {route.name}
                            </option>
@@ -528,4 +532,3 @@ function mapResponseDisplay(tone: string) {
 
    return "odrzucone";
 }
-

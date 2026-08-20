@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiCornerUpRight, FiX } from "react-icons/fi";
+import { FiBarChart2, FiCornerUpRight, FiX } from "react-icons/fi";
 import { GiPodiumWinner, GiRunningShoe } from "react-icons/gi";
 import { useAuth } from "../context/AuthContext";
 import { submitEventResponse } from "../lib/api";
@@ -17,7 +17,7 @@ type EventDetails = {
    eventEndDate?: string;
    dueDate: string;
    newInfo: boolean;
-   place?: string;
+   location?: string;
    onRejected?: (id: string) => void;
 };
 
@@ -56,8 +56,15 @@ export default function EventRow(props: EventDetails) {
    const openOpacity = dragX > 0 ? Math.min(dragX / OPEN_THRESHOLD, 1) : 0;
    const rejectOpacity = dragX < 0 ? Math.min(-dragX / Math.abs(REJECT_THRESHOLD), 1) : 0;
 
+   const isOrganizer = currentUser?.role === "admin" || currentUser?.role === "trainer";
+
    function goToEvent() {
       navigate(`/events/${props.id}`);
+   }
+
+   function goToResults(event: React.MouseEvent) {
+      event.stopPropagation();
+      navigate(`/results/${props.id}`);
    }
 
    async function rejectEvent() {
@@ -177,7 +184,8 @@ export default function EventRow(props: EventDetails) {
                <div className="name">{props.name}</div>
                <div className="meta">
                   {props.eventStartDate}
-                  {props.eventEndDate ? ` - ${props.eventEndDate}` : ""} | {props.place || "Wrocław"}
+                  {props.eventEndDate != props.eventStartDate ? ` - ${props.eventEndDate}` : ""}
+                  {props.location ?? `| ${props.location}`}
                </div>
                <StatusBadge tone={props.status}>{STATUS_LABELS[props.status] || props.status}</StatusBadge>
             </div>
@@ -192,6 +200,24 @@ export default function EventRow(props: EventDetails) {
                   </>
                )}
             </div>
+
+            {isOrganizer && (
+               <button
+                  type="button"
+                  className="event-row-results"
+                  onPointerDown={(e) => {
+                     e.preventDefault();
+                     e.stopPropagation();
+                  }}
+                  onPointerUp={(e) => {
+                     e.preventDefault();
+                     e.stopPropagation();
+                  }}
+                  onClick={goToResults}
+               >
+                  <FiBarChart2 size={22} />
+               </button>
+            )}
          </div>
       </div>
    );

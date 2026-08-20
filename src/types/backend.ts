@@ -31,8 +31,8 @@ export type EventListItemDto = {
    event_id: string;
    event_name: string;
    event_type: EventType;
-   event_start_date: string;
-   event_end_date?: string;
+   date_from: string;
+   date_to?: string;
    signup_open_date: string;
    signup_close_date: string;
    user_response_status: UserResponseStatus;
@@ -59,7 +59,7 @@ export type EventDetailDto = {
       start_time?: string | null;
       start_location_desc?: string | null;
       start_location_link?: string | null;
-      training_routes?: Array<{
+      routes?: Array<{
          id?: string;
          name: string;
          description?: string | null;
@@ -117,6 +117,7 @@ export type CreateEventPayload = {
    date_to: string;
    signup_open_date: string;
    signup_close_date: string;
+   location: string;
    training_details: null | {
       type: TrainingType;
       meeting_time?: string;

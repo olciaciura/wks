@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
    plugins: [react()],
    server: {
-      // proxy: {
+      proxy: {
       //    "/users": "http://localhost:8000",
       //    "/events": "http://localhost:8000",
          "/users": "http://api.zgloszenia-treningi.pl",

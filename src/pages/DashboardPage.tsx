@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { getAllEventsForUser, getEventsForUser } from "../lib/api";
+import { getAllEventsForUser } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 import type { EventListItemDto } from "../types/backend";
 import EventRow from "../components/EventRow";

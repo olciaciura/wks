@@ -22,6 +22,8 @@ export type RegisterRequest = {
    email: string;
    login: string;
    password: string;
+   first_name?: string;
+   last_name?: string;
    birth_year?: number;
    gender?: string;
    category?: string;

@@ -24,6 +24,8 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
               email: String(formData.get("email") ?? ""),
               login,
               password,
+              first_name: String(formData.get("first_name") ?? "") || undefined,
+              last_name: String(formData.get("last_name") ?? "") || undefined,
               birth_year: formData.get("birth_year") ? Number(formData.get("birth_year")) : undefined,
               gender: String(formData.get("gender") ?? "") || undefined,
               category: String(formData.get("category") ?? "") || undefined,
@@ -47,10 +49,20 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
             </label>
 
             {isRegister ? (
+               <>
                <label className="field-group">
                   <span className="field-label">Email</span>
                   <input className="field-input" type="email" name="email" autoComplete="email" />
                </label>
+               <label className="field-group">
+                  <span className="field-label">Imię</span>
+                  <input className="field-input" type="text" name="first_name" autoComplete="given-name" />
+               </label>
+               <label className="field-group">
+                  <span className="field-label">Nazwisko</span>
+                  <input className="field-input" type="text" name="last_name" autoComplete="family-name" />
+               </label>
+               </>
             ) : null}
 
             <label className="field-group">

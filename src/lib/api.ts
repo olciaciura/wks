@@ -8,10 +8,11 @@ import type {
    RegisterRequest,
 } from "../types/backend";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? "";
 
 async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
    const url = API_BASE_URL ? new URL(path, API_BASE_URL).toString() : path;
+   
    const response = await fetch(url, {
       headers: {
          "Content-Type": "application/json",

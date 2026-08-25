@@ -4,7 +4,7 @@
 .bottom-nav {
    position: fixed;
    bottom: 0;
-   left: 0;
+   left: 50%;
    right: 0;
    height: 4.5rem; /* ok. 72px */
    background: var(--surface);
@@ -68,7 +68,7 @@
       /* Zmieniamy dolny pasek na boczny panel (Sidebar) po lewej stronie */
       top: 0;
       bottom: 0;
-      left: 0;
+      left: 50%;
       right: auto;
       width: 6rem; /* Szerokość bocznego panelu (ok. 96px) */
       height: 100vh;

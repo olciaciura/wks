@@ -192,14 +192,14 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                type="button"
                onClick={() => setEventType("training")}
             >
-               Training
+               Trening
             </button>
             <button
                className={`switcher__button${eventType === "competition" ? " is-active" : ""}`}
                type="button"
                onClick={() => setEventType("competition")}
             >
-               Competition
+               Zawody
             </button>
          </div>
 
@@ -231,11 +231,13 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                      <label className="field-group">
                         <span className="field-label">Typ treningu</span>
                         <select className="field-input field-select" name="trainingType" defaultValue="forest">
-                           <option value="sprint">spinterski</option>
+                           <option value="sprint">sprinterski</option>
                            <option value="forest">leśny</option>
                         </select>
                      </label>
-                     <div className="field-group--full field-pair">
+                     
+                     {/* Zmiana na form-grid dla płynnego zawijania na mobile */}
+                     <div className="field-group--full form-grid">
                         <label className="field-group">
                            <span className="field-label">Zapisy od</span>
                            <input className="field-input" name="signupOpen" type="datetime-local" required />
@@ -245,6 +247,7 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                            <input className="field-input" name="signupClose" type="datetime-local" required />
                         </label>
                      </div>
+
                      <div className="field-group--full">
                         <label className="field-group">
                            <span className="field-label">Miejsce zbiórki</span>
@@ -255,7 +258,8 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                               placeholder="Parking przy stadionie"
                            />
                         </label>
-                        <div className="field-group--full field-pair">
+                        {/* Zmiana na form-grid */}
+                        <div className="field-group--full form-grid" style={{ marginTop: '14px' }}>
                            <label className="field-group">
                               <span className="field-label">Pinezka miejsca zbiórki</span>
                               <input
@@ -271,6 +275,7 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                            </label>
                         </div>
                      </div>
+
                      <div className="field-group--full">
                         <label className="field-group">
                            <span className="field-label">Miejsce startu</span>
@@ -281,7 +286,8 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                               placeholder="Polana startowa"
                            />
                         </label>
-                        <div className="field-group--full field-pair">
+                        {/* Zmiana na form-grid */}
+                        <div className="field-group--full form-grid" style={{ marginTop: '14px' }}>
                            <label className="field-group">
                               <span className="field-label">Pinezka miejsca startu</span>
                               <input
@@ -318,29 +324,34 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                      </div>
                      <div className="page-stack page-stack--compact">
                         {routes.map((route) => (
-                           <div className="field-pair field-pair--with-action" key={route.id}>
-                              <label className="field-group">
-                                 <span className="field-label">Nazwa trasy</span>
-                                 <input
-                                    className="field-input"
-                                    type="text"
-                                    value={route.name}
-                                    onChange={(event) => updateRoute(route.id, "name", event.target.value)}
-                                 />
-                              </label>
-                              <label className="field-group">
-                                 <span className="field-label">Opis</span>
-                                 <input
-                                    className="field-input"
-                                    type="text"
-                                    value={route.description}
-                                    onChange={(event) => updateRoute(route.id, "description", event.target.value)}
-                                    placeholder="Np. 7 km technicznie"
-                                 />
-                              </label>
-                              <button className="icon-btn" type="button" onClick={() => removeRoute(route.id)}>
-                                 <GiTrashCan size={24} />
-                              </button>
+                           // Zmiana list na karty info-card, by na mobile formularze się nie zgniatały
+                           <div className="info-card page-stack page-stack--compact" key={route.id}>
+                              <div className="form-grid">
+                                 <label className="field-group">
+                                    <span className="field-label">Nazwa trasy</span>
+                                    <input
+                                       className="field-input"
+                                       type="text"
+                                       value={route.name}
+                                       onChange={(event) => updateRoute(route.id, "name", event.target.value)}
+                                    />
+                                 </label>
+                                 <label className="field-group">
+                                    <span className="field-label">Opis</span>
+                                    <input
+                                       className="field-input"
+                                       type="text"
+                                       value={route.description}
+                                       onChange={(event) => updateRoute(route.id, "description", event.target.value)}
+                                       placeholder="Np. 7 km technicznie"
+                                    />
+                                 </label>
+                              </div>
+                              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                 <button className="ghost-btn ghost-btn--small" type="button" onClick={() => removeRoute(route.id)}>
+                                    <GiTrashCan size={16} style={{ marginRight: '6px' }} /> Usuń trasę
+                                 </button>
+                              </div>
                            </div>
                         ))}
                      </div>
@@ -384,7 +395,8 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                         </>
                      )}
 
-                     <div className="field-group--full field-pair">
+                     {/* Zmiana na form-grid dla płynnego układu mobilnego */}
+                     <div className="field-group--full form-grid">
                         <label className="field-group">
                            <span className="field-label">Zapisy od</span>
                            <input className="field-input" name="signupOpen" type="datetime-local" required />
@@ -461,6 +473,7 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                         </label>
                      ) : null}
                   </div>
+
                   {competitionDateMode === "single" ? (
                      <div className="form-grid">
                         <label className="field-group field-group--full">
@@ -478,37 +491,42 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                         </div>
                         <div className="page-stack page-stack--compact">
                            {runs.map((run) => (
-                              <div className="form-grid" key={run.id}>
-                                 <label className="field-group">
-                                    <span className="field-label">Data biegu</span>
-                                    <input
-                                       className="field-input"
-                                       type="date"
-                                       value={run.date}
-                                       onChange={(event) => updateRun(run.id, "date", event.target.value)}
-                                    />
-                                 </label>
-                                 <label className="field-group">
-                                    <span className="field-label">Nazwa biegu</span>
-                                    <input
-                                       className="field-input"
-                                       type="text"
-                                       value={run.name}
-                                       onChange={(event) => updateRun(run.id, "name", event.target.value)}
-                                       placeholder="Bieg 1"
-                                    />
-                                 </label>
-                                 <button
-                                    className="ghost-btn ghost-btn--small"
-                                    type="button"
-                                    onClick={() => removeRun(run.id)}
-                                 >
-                                    Usuń
-                                 </button>
+                              // Podobnie jak trasy: przeniesione do eleganckich kart mobilnych
+                              <div className="info-card page-stack page-stack--compact" key={run.id}>
+                                 <div className="form-grid">
+                                    <label className="field-group">
+                                       <span className="field-label">Data biegu</span>
+                                       <input
+                                          className="field-input"
+                                          type="date"
+                                          value={run.date}
+                                          onChange={(event) => updateRun(run.id, "date", event.target.value)}
+                                       />
+                                    </label>
+                                    <label className="field-group">
+                                       <span className="field-label">Nazwa biegu</span>
+                                       <input
+                                          className="field-input"
+                                          type="text"
+                                          value={run.name}
+                                          onChange={(event) => updateRun(run.id, "name", event.target.value)}
+                                          placeholder="Np. Bieg 1"
+                                       />
+                                    </label>
+                                 </div>
+                                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                    <button
+                                       className="ghost-btn ghost-btn--small"
+                                       type="button"
+                                       onClick={() => removeRun(run.id)}
+                                    >
+                                       <GiTrashCan size={16} style={{ marginRight: '6px' }} /> Usuń bieg
+                                    </button>
+                                 </div>
                               </div>
                            ))}
                            {runs.length === 0 ? (
-                              <p className="page-copy">Brak biegów - dodaj pierwszy powyżej.</p>
+                              <p className="page-copy" style={{ textAlign: "center", padding: "10px 0" }}>Brak biegów - dodaj pierwszy przyciskiem powyżej.</p>
                            ) : null}
                         </div>
                      </div>
@@ -516,9 +534,9 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                </section>
             )}
 
-            {submitError ? <p className="page-copy">{submitError}</p> : null}
+            {submitError ? <p className="page-copy" style={{ color: "var(--color-accent)" }}>{submitError}</p> : null}
 
-            <div className="action-row">
+           <div className="action-row">
                <Link className="ghost-btn" to="/dashboard">
                   Anuluj
                </Link>

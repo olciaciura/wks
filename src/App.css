@@ -7,6 +7,5 @@ body {
 @media (min-width: 768px) {
    body {
       padding-bottom: 0;
-      padding-left: 6rem; /* Robimy miejsce na boczny panel */
    }
 }

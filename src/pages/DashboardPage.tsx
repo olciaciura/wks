@@ -72,28 +72,34 @@ export default function DashboardPage() {
    return (
       <section className="dashboard screen-stack">
          <header className="dashboard-hero page-stack page-stack--compact">
-            <div className="filter-row" aria-label="Szybkie filtry">
-               {quickFilters.map((filter) => (
-                  <span key={filter} className="chip chip--soft">
-                     {filter}
-                  </span>
-               ))}
+            {/* Dodano wrapper .filter-scroll-area dla płynnego przewijania na smartfonach */}
+            <div className="filter-scroll-area">
+               <div className="filter-row" aria-label="Szybkie filtry">
+                  {quickFilters.map((filter) => (
+                     <span key={filter} className="chip chip--soft">
+                        {filter}
+                     </span>
+                  ))}
+               </div>
             </div>
          </header>
 
-         <div className="dashboard-summary">
-            <article className="summary-card">
-               <span className="summary-card__label">Do uzupełnienia</span>
-               <strong>{summary.pending}</strong>
-            </article>
-            <article className="summary-card">
-               <span className="summary-card__label">Zapisane treningi</span>
-               <strong>{summary.trainingSignedUp}</strong>
-            </article>
-            <article className="summary-card">
-               <span className="summary-card__label">Zapisane zawody</span>
-               <strong>{summary.competitionSignedUp}</strong>
-            </article>
+         {/* Wrapper dla statystyk - na mobile będzie przewijany palcem poziomo */}
+         <div className="summary-scroll-area">
+            <div className="dashboard-summary">
+               <article className="summary-card">
+                  <span className="summary-card__label">Do uzupełnienia</span>
+                  <strong>{summary.pending}</strong>
+               </article>
+               <article className="summary-card">
+                  <span className="summary-card__label">Zapisane treningi</span>
+                  <strong>{summary.trainingSignedUp}</strong>
+               </article>
+               <article className="summary-card">
+                  <span className="summary-card__label">Zapisane zawody</span>
+                  <strong>{summary.competitionSignedUp}</strong>
+               </article>
+            </div>
          </div>
 
          {isLoading ? <div className="page-card">Ładowanie wydarzeń...</div> : null}

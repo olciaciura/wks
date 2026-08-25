@@ -103,12 +103,18 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
          dateFrom = trainingDateTime;
          dateTo = trainingDateTime;
 
+         // Pobieramy same godziny (np. "17:20")
+         const meetingTimeRaw = getValue("meetingTime");
+         const startTimeRaw = getValue("startTime");
+
          trainingDetails = {
             type: getValue("trainingType") as "sprint" | "forest",
-            meeting_time: getValue("meetingTime") || undefined,
+            // NAPRAWA: Jeśli podano godzinę, sklejamy ją z datą główną (YYYY-MM-DDTHH:mm:00)
+            meeting_time: meetingTimeRaw ? `${dateFrom}T${meetingTimeRaw}:00` : undefined,
             meeting_location_desc: getValue("meetingLocationDesc") || undefined,
             meeting_location_link: getValue("meetingLocationLink") || undefined,
-            start_time: getValue("startTime") || undefined,
+            // NAPRAWA: Podobnie dla godziny startu
+            start_time: startTimeRaw ? `${dateFrom}T${startTimeRaw}:00` : undefined,
             start_location_desc: getValue("startLocationDesc") || undefined,
             start_location_link: getValue("startLocationLink") || undefined,
             transport_available: trainingTransport,
@@ -133,10 +139,14 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
             dateTo = getValue("competitionDateTo");
          }
 
+         // Pobieramy godzinę wyjazdu (np. "06:15")
+         const departureTimeRaw = getValue("departureTime");
+
          competitionDetails = {
             competition_name: title,
             transport_available: competitionTransport,
-            departure_time: getValue("departureTime") || undefined,
+            // NAPRAWA: Sklejamy datę z godziną w pełen DateTime format ISO 8601
+            departure_time: departureTimeRaw ? `${dateFrom}T${departureTimeRaw}:00` : undefined,
             departure_location_desc: getValue("departureLocationDesc") || undefined,
             departure_location_link: getValue("departureLocationLink") || undefined,
             accomodation_available: accommodation,

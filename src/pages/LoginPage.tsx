@@ -1,4 +1,4 @@
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser, registerUser } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
@@ -12,28 +12,43 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
    const { setCurrentUser } = useAuth();
    const isRegister = mode === "register";
 
+   // Dodajemy stan do przechowywania wiadomości o błędzie
+   const [error, setError] = useState<string | null>(null);
+
    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      
+      // Czyścimy poprzedni błąd przy nowej próbie wysłania formularza
+      setError(null);
 
       const formData = new FormData(event.currentTarget);
       const login = String(formData.get("login") ?? "");
       const password = String(formData.get("password") ?? "");
 
-      const user = isRegister
-         ? await registerUser({
-              email: String(formData.get("email") ?? ""),
-              login,
-              password,
-              first_name: String(formData.get("first_name") ?? "") || undefined,
-              last_name: String(formData.get("last_name") ?? "") || undefined,
-              birth_year: formData.get("birth_year") ? Number(formData.get("birth_year")) : undefined,
-              gender: String(formData.get("gender") ?? "") || undefined,
-              category: String(formData.get("category") ?? "") || undefined,
-           })
-         : await loginUser({ login, password });
+      try {
+         const user = isRegister
+            ? await registerUser({
+                 email: String(formData.get("email") ?? ""),
+                 login,
+                 password,
+                 first_name: String(formData.get("first_name") ?? "") || undefined,
+                 last_name: String(formData.get("last_name") ?? "") || undefined,
+                 birth_year: formData.get("birth_year") ? Number(formData.get("birth_year")) : undefined,
+                 gender: String(formData.get("gender") ?? "") || undefined,
+                 category: String(formData.get("category") ?? "") || undefined,
+              })
+            : await loginUser({ login, password });
 
-      setCurrentUser(user);
-      navigate("/dashboard");
+         setCurrentUser(user);
+         navigate("/dashboard");
+      } catch (err) {
+         // Wychwytujemy błąd z API i ustawiamy odpowiedni komunikat
+         if (isRegister) {
+            setError("Błąd podczas rejestracji. Sprawdź poprawność danych.");
+         } else {
+            setError("Nieprawidłowy login lub hasło.");
+         }
+      }
    };
 
    return (
@@ -42,6 +57,13 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
             <div className="auth-brand">
                <span className="auth-brand__name">OriSuS</span>
             </div>
+
+            {/* Renderowanie komunikatu o błędzie, jeśli istnieje */}
+            {error && (
+               <div className="error-message" style={{ color: "#ff4d4f", textAlign: "center", margin: "10px 0", fontWeight: "bold" }}>
+                  {error}
+               </div>
+            )}
 
             <label className="field-group">
                <span className="field-label">Login</span>
@@ -66,7 +88,7 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
             ) : null}
 
             <label className="field-group">
-               <span className="field-label">Haslo</span>
+               <span className="field-label">Hasło</span>
                <input className="field-input" type="password" name="password" autoComplete="current-password" />
             </label>
 

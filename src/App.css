@@ -1,1 +1,12 @@
 
+/* Domyślnie na mobile dajemy margines na dole, żeby pasek nie zasłaniał treści */
+body {
+   padding-bottom: 5rem;
+}
+
+@media (min-width: 768px) {
+   body {
+      padding-bottom: 0;
+      padding-left: 6rem; /* Robimy miejsce na boczny panel */
+   }
+}

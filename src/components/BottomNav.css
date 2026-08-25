@@ -1,0 +1,94 @@
+/* =========================================
+   BOTTOM NAV (Mobiles - domyślnie)
+   ========================================= */
+.bottom-nav {
+   position: fixed;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   height: 4.5rem; /* ok. 72px */
+   background: var(--surface);
+   border-top: 1px solid var(--border);
+   box-shadow: 0 -8px 32px rgba(17, 17, 17, 0.08); /* Delikatny cień idący w górę */
+   display: flex;
+   justify-content: space-around;
+   align-items: center;
+   z-index: 1000;
+   padding-bottom: env(safe-area-inset-bottom); /* Dla iPhone'ów z notchem */
+   transition: all 0.3s ease;
+}
+
+.bottom-nav__item {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 0.35rem;
+   text-decoration: none;
+   flex: 1;
+   height: 100%;
+   color: var(--text);
+   opacity: 0.65;
+   transition: transform 0.15s ease, opacity 0.15s ease, color 0.15s ease;
+   user-select: none;
+   -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav__item svg {
+   transition: transform 0.2s ease;
+}
+
+.bottom-nav__label {
+   font-size: 0.75rem;
+   font-weight: 700; /* Dopasowane do Twoich nagłówków */
+   letter-spacing: 0.03em;
+}
+
+/* Stan :hover i .is-active (kliknięte/aktywne) */
+.bottom-nav__item:hover,
+.bottom-nav__item.is-active {
+   opacity: 1;
+   color: var(--color-primary);
+}
+
+.bottom-nav__item.is-active {
+   transform: translateY(-2px); /* Taki sam efekt skoku co w .event-row.card:hover */
+}
+
+.bottom-nav__item.is-active svg {
+   transform: scale(1.1); /* Delikatne powiększenie ikony */
+}
+
+
+/* =========================================
+   DESKTOP VERSION (Sensowna na komputer)
+   ========================================= */
+@media (min-width: 768px) {
+   .bottom-nav {
+      /* Zmieniamy dolny pasek na boczny panel (Sidebar) po lewej stronie */
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: auto;
+      width: 6rem; /* Szerokość bocznego panelu (ok. 96px) */
+      height: 100vh;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2rem;
+      border-top: none;
+      border-right: 1px solid var(--border);
+      box-shadow: 8px 0 32px rgba(17, 17, 17, 0.06);
+      padding-bottom: 0;
+   }
+
+   .bottom-nav__item {
+      flex: 0 0 auto;
+      height: auto;
+      padding: 1rem 0;
+      width: 100%;
+   }
+
+   .bottom-nav__item.is-active {
+      transform: translateX(4px); /* Na komputerze skacze lekko w prawo zamiast w górę */
+   }
+}

@@ -69,7 +69,7 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
                gender: gender || undefined,
                category: category, // Wyliczona kategoria
             });
-            const normalizedUser = { ...user, user_id: user.user_id || user.id };
+            const normalizedUser = { ...user, user_id: user.user_id || (user as any).id };
 
             setCurrentUser(normalizedUser);
             navigate("/dashboard");

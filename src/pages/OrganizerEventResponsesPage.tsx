@@ -62,7 +62,7 @@ export default function OrganizerEventResponsesPage() {
 
          const row: Record<string, any> = {
             id: u.user_id,
-            name: u.name,
+            name: u.first_name + " " + u.last_name,
             category: u.category || "-",
             transport: transportText,
             comment: u.comment || "-",

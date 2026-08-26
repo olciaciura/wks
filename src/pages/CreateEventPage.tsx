@@ -50,6 +50,9 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
    const [isSubmitting, setIsSubmitting] = useState(false);
    const [submitError, setSubmitError] = useState<string | null>(null);
 
+   const [dateFrom, setDateFrom] = useState("");
+   const [signUpDateFrom, setSignUpDateFrom] = useState("");
+
    function addRoute() {
       setRoutes((current) => [...current, { id: crypto.randomUUID(), name: "", description: "" }]);
    }
@@ -103,18 +106,18 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
          dateFrom = trainingDateTime;
          dateTo = trainingDateTime;
 
-         // Pobieramy same godziny (np. "17:20")
+// Pobieramy same godziny (np. "17:20")
          const meetingTimeRaw = getValue("meetingTime");
          const startTimeRaw = getValue("startTime");
 
          trainingDetails = {
             type: getValue("trainingType") as "sprint" | "forest",
-            // NAPRAWA: Jeśli podano godzinę, sklejamy ją z datą główną (YYYY-MM-DDTHH:mm:00)
-            meeting_time: meetingTimeRaw ? `${dateFrom}T${meetingTimeRaw}:00` : undefined,
+            // POPRAWKA: Wysyłamy TYLKO godzinę (w formacie HH:MM:00), bez daty z przodu!
+            meeting_time: meetingTimeRaw ? `${meetingTimeRaw}:00` : undefined,
             meeting_location_desc: getValue("meetingLocationDesc") || undefined,
             meeting_location_link: getValue("meetingLocationLink") || undefined,
-            // NAPRAWA: Podobnie dla godziny startu
-            start_time: startTimeRaw ? `${dateFrom}T${startTimeRaw}:00` : undefined,
+            // POPRAWKA: Tutaj również sama godzina
+            start_time: startTimeRaw ? `${startTimeRaw}:00` : undefined,
             start_location_desc: getValue("startLocationDesc") || undefined,
             start_location_link: getValue("startLocationLink") || undefined,
             transport_available: trainingTransport,
@@ -250,11 +253,13 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                      <div className="field-group--full form-grid">
                         <label className="field-group">
                            <span className="field-label">Zapisy od</span>
-                           <input className="field-input" name="signupOpen" type="datetime-local" required />
+                           <input className="field-input" name="signupOpen" type="datetime-local" required value={signUpDateFrom}
+                                 onChange={(e) => setSignUpDateFrom(e.target.value)}/>
                         </label>
                         <label className="field-group">
                            <span className="field-label">Zapisy do</span>
-                           <input className="field-input" name="signupClose" type="datetime-local" required />
+                           <input className="field-input" name="signupClose" type="datetime-local" required 
+                                 min={signUpDateFrom}/>
                         </label>
                      </div>
 
@@ -394,14 +399,29 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                         </label>
                      ) : (
                         <>
+                           <>
                            <label className="field-group">
                               <span className="field-label">Data od</span>
-                              <input className="field-input" name="competitionDateFrom" type="date" required />
+                              <input 
+                                 className="field-input" 
+                                 name="competitionDateFrom" 
+                                 type="date" 
+                                 required 
+                                 value={dateFrom}
+                                 onChange={(e) => setDateFrom(e.target.value)}
+                              />
                            </label>
                            <label className="field-group">
                               <span className="field-label">Data do</span>
-                              <input className="field-input" name="competitionDateTo" type="date" required />
+                              <input 
+                                 className="field-input" 
+                                 name="competitionDateTo" 
+                                 type="date" 
+                                 required 
+                                 min={dateFrom}
+                              />
                            </label>
+                        </>
                         </>
                      )}
 
@@ -409,11 +429,13 @@ export default function CreateEventPage({ initialType }: CreateEventPageProps) {
                      <div className="field-group--full form-grid">
                         <label className="field-group">
                            <span className="field-label">Zapisy od</span>
-                           <input className="field-input" name="signupOpen" type="datetime-local" required />
+                           <input className="field-input" name="signupOpen" type="datetime-local" required value={signUpDateFrom}
+                                 onChange={(e) => setSignUpDateFrom(e.target.value)}/>
                         </label>
                         <label className="field-group">
                            <span className="field-label">Zapisy do</span>
-                           <input className="field-input" name="signupClose" type="datetime-local" required />
+                           <input className="field-input" name="signupClose" type="datetime-local" required 
+                                 min={signUpDateFrom}/>
                         </label>
                      </div>
                   </div>

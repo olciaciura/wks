@@ -1168,3 +1168,243 @@ h2 {
       line-height: 1.1;
    }
 }
+
+/* TABELA DLA ORGANIZATORA */
+.organizer-table-wrapper {
+   width: 100%;
+   overflow-x: auto;
+   -webkit-overflow-scrolling: touch;
+   scrollbar-width: thin;
+   padding: 0 16px; /* Wcięcia po bokach karty */
+}
+
+.organizer-table {
+   width: 100%;
+   border-collapse: collapse;
+   text-align: left;
+   min-width: 900px; 
+}
+
+/* KOMÓRKI NAGŁÓWKÓW */
+.organizer-table th {
+   padding: 12px 10px;
+   border-bottom: 2px solid var(--border);
+   vertical-align: bottom;
+}
+
+.th-content {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.th-sort-btn {
+   display: flex;
+   align-items: center;
+   width: 100%;
+   padding: 4px 0;
+   font-weight: 600;
+   font-size: 0.85rem;
+   color: var(--text-h);
+   background: transparent;
+   cursor: pointer;
+}
+
+.sort-icon {
+   color: var(--color-primary);
+   font-size: 0.9rem;
+   margin-left: 6px;
+   opacity: 0.4;
+   transition: opacity 0.2s ease;
+}
+.th-sort-btn:hover .sort-icon {
+   opacity: 1;
+}
+
+/* WYGLĄD INPUTÓW FILTRÓW (Naprawa jasnych boksów) */
+.th-filter-input {
+   width: 100%;
+   min-width: 80px;
+   padding: 6px 10px;
+   font-size: 0.8rem;
+   border: 1px solid var(--border);
+   border-radius: 8px;
+   background: var(--surface-strong); /* Idealne tło pasujące do Dark/Light mode! */
+   color: var(--text-h);
+   outline: none;
+   box-sizing: border-box;
+   transition: border-color 0.2s ease;
+}
+.th-filter-input:focus {
+   border-color: var(--accent-strong);
+}
+
+/* WIERSZE DANYCH */
+.organizer-table td {
+   padding: 14px 10px;
+   border-bottom: 1px solid var(--border);
+   font-size: 0.9rem;
+   vertical-align: middle;
+}
+
+.organizer-table tbody tr:hover {
+   background: color-mix(in srgb, var(--surface-strong) 40%, transparent 60%);
+}
+
+.table-comment {
+   max-width: 250px;
+   word-wrap: break-word;
+   font-size: 0.85rem;
+   color: var(--text);
+}
+
+/* ZNAKI I ETYKIETY */
+.check-yes {
+   color: var(--color-success);
+   font-weight: 800;
+   font-size: 1.1rem;
+}
+
+.check-no {
+   color: var(--text);
+   opacity: 0.3;
+   font-weight: 800;
+   font-size: 1rem;
+}
+
+.status-pill {
+   display: inline-block;
+   padding: 4px 10px;
+   border-radius: 999px;
+   font-size: 0.75rem;
+   font-weight: 700;
+   text-transform: uppercase;
+   white-space: nowrap;
+}
+
+.status-pill--success {
+   background: color-mix(in srgb, var(--color-success-soft) 78%, white 22%);
+   color: var(--color-success);
+}
+
+.status-pill--muted {
+   background: color-mix(in srgb, var(--color-muted) 55%, white 45%);
+   color: color-mix(in srgb, var(--text) 55%, transparent 45%);
+}
+.full-width-layout {
+   width: 100vw;
+   position: relative;
+   left: 50%;
+   transform: translateX(-50%);
+   padding: 0 16px; 
+   box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+   .full-width-layout {
+      width: calc(100vw - 12rem);
+      transform: translateX(-50%);
+      padding: 0 32px; 
+   }
+}
+
+/* 2. CZYTELNE NAGŁÓWKI TABELI */
+.organizer-table th {
+   background: var(--surface-strong); /* Wyróżnione, ciemniejsze tło */
+   padding: 16px 12px;
+   border-bottom: 2px solid var(--accent-strong); /* Mocna linia oddzielająca */
+   vertical-align: bottom;
+}
+
+.th-sort-btn {
+   display: flex;
+   align-items: center;
+   width: 100%;
+   padding: 4px 0 12px 0; /* Odstęp między tekstem a inputem */
+   font-weight: 800; /* Pogrubienie */
+   font-size: 0.8rem;
+   color: var(--text-h);
+   text-transform: uppercase; /* Duże litery dla czytelności */
+   letter-spacing: 0.05em;
+   background: transparent;
+   cursor: pointer;
+}
+
+/* 3. NAPRAWA BIAŁYCH PÓL FILTRÓW */
+.th-filter-input {
+   width: 100%;
+   min-width: 90px;
+   padding: 8px 10px;
+   font-size: 0.85rem;
+   
+   /* Wymuszenie ciemnego motywu (żeby przeglądarka nie wstawiała białego) */
+   background-color: var(--bg) !important; 
+   color: var(--text-h) !important;
+   border: 1px solid var(--border) !important;
+   border-radius: 6px;
+   box-sizing: border-box;
+   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.th-filter-input::placeholder {
+   color: var(--text);
+   opacity: 0.6;
+}
+
+.th-filter-input:focus {
+   border-color: var(--color-primary) !important;
+   outline: none;
+   box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+/* ========================================================
+   NAPRAWA NATYWNYCH KONTROLEK (SELECT, DATE, TIME)
+   ======================================================== */
+
+/* 1. Własna, ładna strzałka dla pól wyboru (Select) */
+.field-select {
+   /* Usuwa domyślną systemową strzałkę */
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+   
+   /* Wstawia nową strzałkę (SVG dopasowane kolorem do tekstu) */
+   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23b3b8c9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+   background-repeat: no-repeat;
+   
+   /* Ustawia strzałkę ładnie po prawej stronie (16px marginesu) */
+   background-position: right 16px center; 
+   
+   /* Robi miejsce, żeby długi tekst nie najechał na strzałkę */
+   padding-right: 40px; 
+}
+
+/* Jasna strzałka dla trybu jasnego (Light Mode) */
+@media (prefers-color-scheme: light) {
+   .field-select {
+      /* Ciemniejszy kolor strzałki dla jasnego tła */
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23554b66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+   }
+}
+
+
+/* 2. Jasne ikony Kalendarza i Zegara w Dark Mode */
+@media (prefers-color-scheme: dark) {
+   /* Wymusza na przeglądarce rysowanie kontrolek w stylu Dark Mode. 
+      Przeglądarka SAMA zmieni ikonki na jasne i otworzy ciemny kalendarz! */
+   .field-input, .field-select {
+      color-scheme: dark;
+   }
+
+   /* Dodajemy tylko ładny kursor i drobną korektę położenia, bez psucia kolorów */
+   .field-input::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      margin-right: 4px;
+      opacity: 0.8;
+      transition: opacity 0.2s ease;
+   }
+   
+   .field-input::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+   }
+}

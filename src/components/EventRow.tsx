@@ -22,9 +22,9 @@ type EventDetails = {
 };
 
 const STATUS_LABELS: Record<string, string> = {
-   uzupelnione: "Signed up",
-   nieuzupelnione: "To do",
-   nie_jade: "Rejected",
+   uzupelnione: "Zgłoszony",
+   nieuzupelnione: "Do uzupełnienia",
+   nie_jade: "Odrzucone",
 };
 
 const OPEN_THRESHOLD = 88;
@@ -72,18 +72,44 @@ export default function EventRow(props: EventDetails) {
          return;
       }
 
+      // Bezpieczne pobranie ID
+      // @ts-ignore
+      const userId = currentUser.id || currentUser.user_id;
+
       try {
-         await submitEventResponse(props.id, props.type === "competition" ? "competition" : "training", {
-            user_id: currentUser.user_id,
-            status: "rejected",
+         // Tworzymy bazowy payload (wspólny dla obu typów)
+         // Używamy "as any", aby wyciszyć narzekanie TypeScriptu na dokładny typ statusu
+         const payload: any = {
+            user_id: userId,
+            status: "rejected", // WIELKIMI LITERAMI
             needs_transport: false,
-            self_transport: false,
             can_take_people: 0,
-            comment: "",
-         });
+            comment: ""
+         };
+
+         // ZAGNIEŻDŻAMY specyficzne dane zgodnie z wymogami backendu (błąd loc: ["body", "competition"])
+         if (props.type === "competition") {
+            payload.competition = {
+               needs_accommodation: false,
+               wants_food: false,
+               is_vege: false,
+               runs: []
+            };
+         } else {
+            payload.training = {
+               selected_route_id: null
+            };
+         }
+
+         await submitEventResponse(
+            props.id, 
+            props.type === "competition" ? "competition" : "training", 
+            payload
+         );
+         
          props.onRejected?.(props.id);
-      } catch {
-         // Ignore network errors here; the row simply springs back.
+      } catch (error) {
+         console.error("Nie udało się zapisać odrzucenia:", error);
       }
    }
 
@@ -184,19 +210,20 @@ export default function EventRow(props: EventDetails) {
                <div className="name">{props.name}</div>
                <div className="meta">
                   {props.eventStartDate}
-                  {props.eventEndDate != props.eventStartDate ? ` - ${props.eventEndDate}` : ""}
-                  {props.location ?? `| ${props.location}`}
+                  {props.eventEndDate && props.eventEndDate !== props.eventStartDate ? ` - ${props.eventEndDate}` : ""}
+                  {/* POPRAWKA: Poprawnie wyświetlamy separator lokalizacji */}
+                  {props.location ? ` | ${props.location}` : ""} 
                </div>
                <StatusBadge tone={props.status}>{STATUS_LABELS[props.status] || props.status}</StatusBadge>
             </div>
 
             <div className={`event-row due${isUrgent ? " urgent" : ""}`}>
                {isClosed ? (
-                  <div className="due-closed">Closed</div>
+                  <div className="due-closed">Zapisy zamknięte</div>
                ) : (
                   <>
                      <div className="due-number">{daysLeft}</div>
-                     <div className="due-label">days left</div>
+                     <div className="due-label">{daysLeft === 1 ? "dzień" : "dni"} zostało</div>
                   </>
                )}
             </div>

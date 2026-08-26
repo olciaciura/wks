@@ -52,7 +52,13 @@ export async function getEventsForUser(userId: string): Promise<EventListItemDto
 }
 
 export async function getAllEventsForUser(userId: string): Promise<EventListItemDto[]> {
-   return apiRequest<EventListItemDto[]>(`/events/all?${new URLSearchParams({ user_id: userId }).toString()}`);
+   // Tworzymy parametry, dodając aktualny czas (t) jako zabezpieczenie przed cache
+   const params = new URLSearchParams({
+      user_id: userId,
+      t: Date.now().toString(), // <-- CACHE BUSTER (wymusza pobranie świeżych danych)
+   });
+
+   return apiRequest<EventListItemDto[]>(`/events/all?${params.toString()}`);
 }
 
 export async function getEventDetail(eventId: string, userId: string): Promise<EventDetailDto> {

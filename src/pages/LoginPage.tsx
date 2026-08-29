@@ -34,28 +34,30 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
             let category: string | undefined = undefined;
 
             // Logika wyliczania kategorii na podstawie płci i wieku
-            if (birthYear && (gender === "K" || gender === "M")) {
+            if (birthYear && (gender === "female" || gender === "male")) {
                const currentYear = new Date().getFullYear();
                const age = currentYear - birthYear;
                
+               const genderPrefix = gender === "female" ? "K" : "M"; 
+
                if (age <= 10) {
-                  category = `${gender}10`;
+                  category = `${genderPrefix}10`;
                } else if (age <= 12) {
-                  category = `${gender}12`;
+                  category = `${genderPrefix}12`;
                } else if (age <= 14) {
-                  category = `${gender}14`;
+                  category = `${genderPrefix}14`;
                } else if (age <= 16) {
-                  category = `${gender}16`;
+                  category = `${genderPrefix}16`;
                } else if (age <= 18) {
-                  category = `${gender}18`;
+                  category = `${genderPrefix}18`;
                } else if (age <= 20) {
-                  category = `${gender}20`;
+                  category = `${genderPrefix}20`;
                } else if (age < 35) {
-                  category = `${gender}21`;
+                  category = `${genderPrefix}21`;
                } else {
                   // Powyżej 35 lat - skok co 5 (np. 35, 40, 45, 50...)
                   const veteranAge = Math.floor(age / 5) * 5;
-                  category = `${gender}${veteranAge}`;
+                  category = `${genderPrefix}${veteranAge}`;
                }
             }
 

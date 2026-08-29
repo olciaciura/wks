@@ -58,7 +58,7 @@ export default function OrganizerEventResponsesPage() {
          const transportText = 
             Number(u.can_take_people) > 0 ? `Bierze ${u.can_take_people}` 
             : u.needs_transport ? "Potrzebuje" 
-            : "Własny / Nie";
+            : "Własny transport";
 
          const row: Record<string, any> = {
             id: u.user_id,

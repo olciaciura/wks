@@ -9,6 +9,12 @@ export type CurrentUser = {
    user_id: string;
    login: string;
    role: UserRole;
+   first_name?: string;
+   last_name?: string;
+   email?: string;
+   birth_year?: number;
+   gender?: string;
+   category?: string;
 };
 
 export type LoginRequest = {

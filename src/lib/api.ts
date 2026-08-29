@@ -91,6 +91,19 @@ export async function getEventResponses(eventId: string): Promise<EventResponses
    return apiRequest<EventResponsesDto>(`/events/${eventId}/all_responses`);
 }
 
+export async function updateUserData(userId: string, data: any) {
+   return apiRequest(`/users/${userId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+   });
+}
+
+export async function changeUserPassword(userId: string, data: any) {
+   return apiRequest(`/users/${userId}/password`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+   });
+}
 export interface EventResponsesDto {
    event: {
       id: string;

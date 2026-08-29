@@ -12,8 +12,10 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
    const { setCurrentUser } = useAuth();
    const isRegister = mode === "register";
 
-   // Dodajemy stan do przechowywania wiadomości o błędzie
+   // Stany do obsługi błędów i haseł na bieżąco
    const [error, setError] = useState<string | null>(null);
+   const [password, setPassword] = useState("");
+   const [passwordRepeat, setPasswordRepeat] = useState("");
 
    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -23,8 +25,7 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
 
       const formData = new FormData(event.currentTarget);
       const login = String(formData.get("login") ?? "");
-      const password = String(formData.get("password") ?? "");
-
+      
       try {
          if (isRegister) {
             const birthYearRaw = formData.get("birth_year");
@@ -69,7 +70,7 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
                last_name: String(formData.get("last_name") ?? "") || undefined,
                birth_year: birthYear,
                gender: gender || undefined,
-               category: category, // Wyliczona kategoria
+               category: category, 
             });
             const normalizedUser = { ...user, user_id: user.user_id || (user as any).id };
 
@@ -81,7 +82,6 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
             navigate("/dashboard");
          }
       } catch (err) {
-         // Wychwytujemy błąd z API i ustawiamy odpowiedni komunikat
          if (isRegister) {
             setError("Błąd podczas rejestracji. Sprawdź poprawność danych.");
          } else {
@@ -90,6 +90,9 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
       }
    };
 
+   // Przycisk jest zablokowany tylko w trybie rejestracji, jeśli hasła się nie zgadzają lub są puste
+   const isButtonDisabled = isRegister && (password !== passwordRepeat || password.length === 0);
+
    return (
       <section className="auth-screen">
          <form className="auth-card page-stack" onSubmit={handleSubmit}>
@@ -97,7 +100,6 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
                <span className="auth-brand__name">OriSuS</span>
             </div>
 
-            {/* Renderowanie komunikatu o błędzie, jeśli istnieje */}
             {error && (
                <div
                   className="error-message"
@@ -120,19 +122,49 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
                   </label>
                   <label className="field-group">
                      <span className="field-label">Imię</span>
-                     <input className="field-input" type="text" name="first_name" autoComplete="given-name" />
+                     <input className="field-input" type="text" name="first_name" autoComplete="given-name" required />
                   </label>
                   <label className="field-group">
                      <span className="field-label">Nazwisko</span>
-                     <input className="field-input" type="text" name="last_name" autoComplete="family-name" />
+                     <input className="field-input" type="text" name="last_name" autoComplete="family-name" required/>
                   </label>
                </>
             ) : null}
 
             <label className="field-group">
                <span className="field-label">Hasło</span>
-               <input className="field-input" type="password" name="password" autoComplete="current-password" required />
+               <input 
+                  className="field-input" 
+                  type="password" 
+                  name="password" 
+                  autoComplete={isRegister ? "new-password" : "current-password"}
+                  required 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+               />
             </label>
+
+            {/* Powtórz hasło - teraz widoczne TYLKO przy rejestracji */}
+            {isRegister ? (
+               <label className="field-group">
+                  <span className="field-label">Powtórz hasło</span>
+                  <input 
+                     className="field-input" 
+                     type="password" 
+                     name="password_repeat" 
+                     autoComplete="new-password" 
+                     required 
+                     value={passwordRepeat}
+                     onChange={(e) => setPasswordRepeat(e.target.value)}
+                  />
+                  {/* Mała podpowiedź wizualna dla użytkownika */}
+                  {password !== passwordRepeat && passwordRepeat.length > 0 && (
+                     <span style={{ color: "var(--color-accent)", fontSize: "0.8rem", marginTop: "4px" }}>
+                        Hasła nie są identyczne!
+                     </span>
+                  )}
+               </label>
+            ) : null}
 
             {isRegister ? (
                <>
@@ -152,7 +184,13 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
                </>
             ) : null}
 
-            <button className="primary-btn" type="submit">
+            {/* Zablokowanie przycisku */}
+            <button 
+               className="primary-btn" 
+               type="submit" 
+               disabled={isButtonDisabled}
+               style={{ opacity: isButtonDisabled ? 0.5 : 1, cursor: isButtonDisabled ? "not-allowed" : "pointer" }}
+            >
                {isRegister ? "Utwórz konto" : "Zaloguj"}
             </button>
 
@@ -166,9 +204,9 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
                      Stwórz nowe konto
                   </Link>
                )}
-               <button className="ghost-btn" type="button">
+               <Link className="ghost-btn" to="/forgot-password" style={{ display: "flex", justifyContent: "center" }}>
                   Zapomniałeś hasła?
-               </button>
+               </Link>
             </div>
          </form>
       </section>

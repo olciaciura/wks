@@ -1408,3 +1408,35 @@ h2 {
       opacity: 1;
    }
 }
+
+/* Siatka dla sekcji danych osobowych */
+.profile-grid {
+   display: grid;
+   grid-template-columns: repeat(2, 1fr); /* Na telefonie 2 kolumny dla danych */
+   gap: 16px;
+   align-items: center;
+}
+
+.edit-profile-btn {
+   color: var(--color-primary);
+   border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+   width: 100%;
+   grid-column: 1 / -1; 
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 14px; 
+}
+
+@media (min-width: 720px) {
+   .profile-grid {
+      grid-template-columns: 1fr 1fr 1fr 1fr 64px; 
+   }
+   
+   .edit-profile-btn {
+      width: 64px;
+      height: 64px;
+      padding: 0;
+      grid-column: auto; 
+   }
+}

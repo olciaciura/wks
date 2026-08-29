@@ -71,6 +71,7 @@ export default function DashboardPage() {
 
    return (
       <section className="dashboard screen-stack">
+         <div style={{ display: "none" }}>
          <header className="dashboard-hero page-stack page-stack--compact">
             {/* Dodano wrapper .filter-scroll-area dla płynnego przewijania na smartfonach */}
             <div className="filter-scroll-area">
@@ -102,6 +103,7 @@ export default function DashboardPage() {
             </div>
          </div>
 
+         </div>
          {isLoading ? <div className="page-card">Ładowanie wydarzeń...</div> : null}
          {errorMessage ? <div className="page-card page-copy">{errorMessage}</div> : null}
 

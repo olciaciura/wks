@@ -200,13 +200,16 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
                      Mam już konto
                   </Link>
                ) : (
-                  <Link className="ghost-btn" to="/register" style={{ display: "flex", justifyContent: "center" }}>
-                     Stwórz nowe konto
-                  </Link>
+                  <>
+                     <Link className="ghost-btn" to="/register" style={{ display: "flex", justifyContent: "center" }}>
+                        Stwórz nowe konto
+                     </Link>
+                     <Link className="ghost-btn" to="/forgot-password" style={{ display: "none", justifyContent: "center" }}>
+                        Zapomniałeś hasła?
+                     </Link>
+                  </>
                )}
-               <Link className="ghost-btn" to="/forgot-password" style={{ display: "flex", justifyContent: "center" }}>
-                  Zapomniałeś hasła?
-               </Link>
+               
             </div>
          </form>
       </section>

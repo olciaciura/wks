@@ -10,15 +10,20 @@ import TreningForm from "./pages/TreningForm";
 import OrganizerEventResponsesPage from "./pages/OrganizerEventResponsesPage";
 import EditEventPage from "./pages/UpdateEventPage";
 import PrzerwaTechniczna from "./pages/PrzerwaTechniczna";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 export default function App() {
    return (
       <Router>
          <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
-            {/* <Route path="/login" element={<LoginPage mode="login" />} /> */}
-            <Route path="/login" element={<PrzerwaTechniczna />} />
+            <Route path="/login" element={<LoginPage mode="login" />} />
+            {/* <Route path="/login" element={<PrzerwaTechniczna />} /> */}
             <Route path="/register" element={<LoginPage mode="register" />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+           
             <Route element={<AppShell />}>
                <Route path="/dashboard" element={<DashboardPage />} />
                <Route path="/events/:eventId" element={<EventDetailPage />} />
@@ -27,7 +32,7 @@ export default function App() {
                <Route path="/competition" element={<CompetitionForm />} />
                <Route path="/results/:eventId" element={<OrganizerEventResponsesPage />} />
                <Route path="/events/:eventId/edit" element={<EditEventPage />} />
-            </Route>
+                </Route>
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
          </Routes>
       </Router>

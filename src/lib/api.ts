@@ -115,6 +115,21 @@ export async function changeUserPassword(userId: string, data: any) {
       body: JSON.stringify(data),
    });
 }
+
+export async function requestPasswordReset(email: string) {
+   return apiRequest("/password/forgot-password", { // dopasuj endpoint do swojego routera
+      method: "POST",
+      body: JSON.stringify({ email }),
+   });
+}
+
+export async function resetPassword(token: string, new_password: string) {
+   return apiRequest("/password/reset-password", { // dopasuj endpoint do swojego routera
+      method: "POST",
+      body: JSON.stringify({ token, new_password }),
+   });
+}
+
 export interface EventResponsesDto {
    event: {
       id: string;
@@ -185,3 +200,4 @@ export interface EventResponseUserDto {
       }[];
    };
 }
+

@@ -9,7 +9,7 @@ import ProfilePage from "./pages/ProfilePage";
 import TreningForm from "./pages/TreningForm";
 import OrganizerEventResponsesPage from "./pages/OrganizerEventResponsesPage";
 import EditEventPage from "./pages/UpdateEventPage";
-import PrzerwaTechniczna from "./pages/PrzerwaTechniczna";
+// import PrzerwaTechniczna from "./pages/PrzerwaTechniczna";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 

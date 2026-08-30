@@ -85,6 +85,17 @@ export async function createEvent(payload: CreateEventPayload): Promise<unknown>
    });
 }
 
+export async function getEventDetails(eventId: string) {
+   return apiRequest<any>(`/events/${eventId}`);
+}
+
+export async function updateEvent(id: string, payload: CreateEventPayload): Promise<unknown> {
+   return apiRequest(`/events/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+   });
+}
+
 export type { CurrentUser } from "../types/backend";
 
 export async function getEventResponses(eventId: string): Promise<EventResponsesDto> {
@@ -109,6 +120,7 @@ export interface EventResponsesDto {
       id: string;
       title: string;
       type: "training" | "competition";
+      location: string;
       date_from: string;
       date_to: string;
    };

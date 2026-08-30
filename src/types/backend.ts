@@ -36,6 +36,7 @@ export type RegisterRequest = {
 };
 
 export type EventListItemDto = {
+   location: string;
    event_id: string;
    event_name: string;
    event_type: EventType;
@@ -52,6 +53,7 @@ export type EventDetailDto = {
       type: EventType;
       title: string;
       description: string;
+      location: string;
       date_from: string;
       date_to: string;
       signup_open_date: string;

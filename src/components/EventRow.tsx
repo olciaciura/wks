@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiBarChart2, FiCornerUpRight, FiX } from "react-icons/fi";
+import { FiBarChart2, FiCornerUpRight, FiX } from "react-icons/fi"; // DODAŁEM FiEdit
+import { GrEdit } from "react-icons/gr"; // DODAŁEM FiEdit
 import { GiPodiumWinner, GiRunningShoe } from "react-icons/gi";
 import { useAuth } from "../context/AuthContext";
 import { submitEventResponse } from "../lib/api";
@@ -67,6 +68,11 @@ export default function EventRow(props: EventDetails) {
       navigate(`/results/${props.id}`);
    }
 
+   function goToEdit(event: React.MouseEvent) {
+      event.stopPropagation();
+      navigate(`/events/${props.id}/edit`); // Przekierowanie na stronę edycji
+   }
+
    async function rejectEvent() {
       if (!currentUser) {
          return;
@@ -77,17 +83,14 @@ export default function EventRow(props: EventDetails) {
       const userId = currentUser.id || currentUser.user_id;
 
       try {
-         // Tworzymy bazowy payload (wspólny dla obu typów)
-         // Używamy "as any", aby wyciszyć narzekanie TypeScriptu na dokładny typ statusu
          const payload: any = {
             user_id: userId,
-            status: "rejected", // WIELKIMI LITERAMI
+            status: "REJECTED", // Wielkimi literami
             needs_transport: false,
             can_take_people: 0,
             comment: ""
          };
 
-         // ZAGNIEŻDŻAMY specyficzne dane zgodnie z wymogami backendu (błąd loc: ["body", "competition"])
          if (props.type === "competition") {
             payload.competition = {
                needs_accommodation: false,
@@ -211,7 +214,6 @@ export default function EventRow(props: EventDetails) {
                <div className="meta">
                   {props.eventStartDate}
                   {props.eventEndDate && props.eventEndDate !== props.eventStartDate ? ` - ${props.eventEndDate}` : ""}
-                  {/* POPRAWKA: Poprawnie wyświetlamy separator lokalizacji */}
                   {props.location ? ` | ${props.location}` : ""} 
                </div>
                <StatusBadge tone={props.status}>{STATUS_LABELS[props.status] || props.status}</StatusBadge>
@@ -228,22 +230,33 @@ export default function EventRow(props: EventDetails) {
                )}
             </div>
 
+            {/* GRUPA PRZYCISKÓW DLA ORGANIZATORA */}
             {isOrganizer && (
-               <button
-                  type="button"
-                  className="event-row-results"
-                  onPointerDown={(e) => {
-                     e.preventDefault();
-                     e.stopPropagation();
-                  }}
-                  onPointerUp={(e) => {
-                     e.preventDefault();
-                     e.stopPropagation();
-                  }}
-                  onClick={goToResults}
-               >
-                  <FiBarChart2 size={22} />
-               </button>
+               <div style={{ display: "flex", gap: "8px", alignItems: "center", marginRight: "-8px" }}>
+                  <button
+                     type="button"
+                     className="event-row-results"
+                     title="Edytuj wydarzenie"
+                     onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                     onPointerUp={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                     onClick={goToEdit}
+                     style={{ padding: "8px" }}
+                  >
+                     <GrEdit size={20} />
+                  </button>
+
+                  <button
+                     type="button"
+                     className="event-row-results"
+                     title="Wyniki i odpowiedzi"
+                     onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                     onPointerUp={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                     onClick={goToResults}
+                     style={{ padding: "8px" }}
+                  >
+                     <FiBarChart2 size={22} />
+                  </button>
+               </div>
             )}
          </div>
       </div>

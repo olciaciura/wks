@@ -114,6 +114,7 @@ export default function DashboardPage() {
                   id={event.event_id}
                   name={event.event_name}
                   type={event.event_type}
+                  location={event.location}
                   status={event.user_response_status}
                   eventStartDate={event.date_from}
                   eventEndDate={event.date_to}

@@ -23,6 +23,9 @@ export default function EventDetailPage() {
 
    const runsContainerRef = useRef<HTMLDivElement>(null);
 
+   const signUpClosedDate = eventDetail?.event.signup_close_date ?? "";
+   const isClosed = new Date() > new Date(signUpClosedDate);
+
    useEffect(() => {
       let isMounted = true;
 
@@ -595,8 +598,12 @@ export default function EventDetailPage() {
 
                {submitMessage ? <p className="page-copy">{submitMessage}</p> : null}
 
-               <button className="primary-btn" type="submit">
-                  Wyślij odpowiedź
+               <button 
+                  className="primary-btn" 
+                  type="submit" 
+                  disabled={isClosed}
+               >
+                  {isClosed ? "Zapisy zakończone" : "Wyślij odpowiedź"}
                </button>
             </form>
          </div>

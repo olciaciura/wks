@@ -168,6 +168,7 @@ export default function EditEventPage() {
          trainingRoutes = routes
             .filter((route) => route.name.trim().length > 0)
             .map((route) => ({
+               id: route.id.includes("-") ? route.id : undefined, // Odfiltrujemy tylko prawdziwe UUID (jeśli użyłeś jakiegoś mock-id)
                name: route.name.trim(),
                description: route.description.trim() || undefined,
                distance: 0,
@@ -200,11 +201,16 @@ export default function EditEventPage() {
 
          if (isSingleDay) {
             const singleRunName = getValue("singleRunName") || title;
-            competitionRuns = [{ name: singleRunName, run_date: eventDateFrom }];
+            const existingId = initialData?.options?.runs?.[0]?.id;
+            competitionRuns = [{ 
+               id: existingId, // <-- to kluczowe!
+               name: singleRunName, 
+               run_date: eventDateFrom 
+            }];
          } else {
             competitionRuns = runs
                .filter((run) => run.name.trim().length > 0 && run.date)
-               .map((run) => ({ name: run.name.trim(), run_date: run.date }));
+               .map((run) => ({ id: run.id.includes("-") ? run.id : undefined, name: run.name.trim(), run_date: run.date }));
          }
       }
 

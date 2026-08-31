@@ -85,7 +85,7 @@ export type EventDetailDto = {
       food_vege_available?: boolean | null;
       series_signup?: boolean | null;
       runs?: Array<{
-         id: string;
+         id?: string;
          name: string;
          run_date: string;
       }>;
@@ -139,6 +139,7 @@ export type CreateEventPayload = {
       transport_available: boolean;
    };
    training_routes: Array<{
+      id?: string;
       name: string;
       description?: string;
       distance: number;
@@ -157,6 +158,7 @@ export type CreateEventPayload = {
       series_signup: boolean;
    };
    competition_runs: Array<{
+      id?: string;
       name: string;
       run_date: string;
    }>;

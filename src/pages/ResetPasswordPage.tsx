@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { resetPassword } from "../lib/api";
 
 export default function ResetPasswordPage() {
@@ -14,13 +14,14 @@ export default function ResetPasswordPage() {
       event.preventDefault();
       if (!token) return;
       setError(null);
-      
+
       const formData = new FormData(event.currentTarget);
       const password = String(formData.get("password") ?? "");
       const confirmPassword = String(formData.get("confirmPassword") ?? "");
 
       if (password !== confirmPassword) {
-         setError("Hasła nie są identyczne!"); return;
+         setError("Hasła nie są identyczne!");
+         return;
       }
 
       try {
@@ -37,10 +38,19 @@ export default function ResetPasswordPage() {
    return (
       <section className="auth-screen">
          <form className="auth-card page-stack" onSubmit={handleSubmit}>
-            <div className="auth-brand"><span className="auth-brand__name">OriSuS</span></div>
+            <div className="auth-brand">
+               <span className="auth-brand__name">OriSuS</span>
+            </div>
             <h2 style={{ textAlign: "center" }}>Nowe hasło</h2>
 
-            {error && <div className="error-message" style={{ color: "var(--color-accent)", textAlign: "center", fontWeight: "bold" }}>{error}</div>}
+            {error && (
+               <div
+                  className="error-message"
+                  style={{ color: "var(--color-accent)", textAlign: "center", fontWeight: "bold" }}
+               >
+                  {error}
+               </div>
+            )}
 
             {!token ? (
                <div className="info-card info-card--muted" style={{ textAlign: "center" }}>

@@ -186,7 +186,7 @@ export type EventResponsePayload = {
       wants_food: boolean;
       wants_vege: boolean;
       run_selections: Array<{
-         run_id: string;
+         run_id?: string;
          participates: boolean;
       }>;
    } | null;

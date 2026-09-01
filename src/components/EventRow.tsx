@@ -35,10 +35,15 @@ const DRAG_LOCK_DISTANCE = 8;
 
 function getDaysLeft(dueDate: string) {
    const due = new Date(dueDate);
+   console.log("Due date:", due);
    const now = new Date();
-   due.setHours(0, 0, 0, 0);
-   now.setHours(0, 0, 0, 0);
-   return Math.ceil((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+   console.log("Current date:", now);
+   
+   // Obliczamy dokładną różnicę czasu w milisekundach
+   const diffMs = due.getTime() - now.getTime();
+   console.log("Difference in milliseconds:", diffMs);
+   // Dzielimy na dni i zaokrąglamy w górę (Math.ceil)
+   return Math.ceil(diffMs / (1000 * 60 )); // minutes left
 }
 
 export default function EventRow(props: EventDetails) {
@@ -51,8 +56,9 @@ export default function EventRow(props: EventDetails) {
    const startYRef = useRef(0);
    const axisLockRef = useRef<"x" | "y" | null>(null);
 
-   const daysLeft = getDaysLeft(props.dueDate);
-   const isClosed = daysLeft < 0;
+   const minutsLeft = getDaysLeft(props.dueDate);
+   const isClosed = minutsLeft < 0;
+   const daysLeft = Math.floor(minutsLeft / (60 * 24)  ); // convert minutes to hours and then to days
    const isUrgent = !isClosed && daysLeft < 4;
    const openOpacity = dragX > 0 ? Math.min(dragX / OPEN_THRESHOLD, 1) : 0;
    const rejectOpacity = dragX < 0 ? Math.min(-dragX / Math.abs(REJECT_THRESHOLD), 1) : 0;
@@ -221,7 +227,7 @@ export default function EventRow(props: EventDetails) {
 
             <div className={`event-row due${isUrgent ? " urgent" : ""}`}>
                {isClosed ? (
-                  <div className="due-closed">Zapisy zamknięte</div>
+                  <div className="due-closed">Zapisy<br/> zamknięte</div>
                ) : (
                   <>
                      <div className="due-number">{daysLeft}</div>

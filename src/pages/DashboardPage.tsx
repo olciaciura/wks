@@ -64,9 +64,42 @@ export default function DashboardPage() {
       );
    }
 
+// Pobieramy informację, czy użytkownik jest adminem
+   // UWAGA: Zmień 'role === "admin"' na takie pole, jakiego używasz w swoim typie User! (np. currentUser?.is_admin)
+   const isAdmin = currentUser?.role === "admin" || currentUser?.role === "trainer";
+
    const visibleEvents = events.filter((event) => {
-      const isSignupClosed = new Date(event.signup_close_date).getTime() < Date.now();
-      return !isSignupClosed || event.user_response_status === "uzupelnione";
+      const now = Date.now();
+      
+      // 1. Sprawdzamy, czy zapisy wciąż są otwarte
+      const isSignupOpen = new Date(event.signup_close_date).getTime() > now;
+
+      // 2. Sprawdzamy czas trwania wydarzenia
+      const fromTime = new Date(event.date_from).getTime();
+      const toTime = event.date_to ? new Date(event.date_to).getTime() : fromTime;
+
+      let eventEndTime: number;
+      if (fromTime === toTime) {
+         // Jednodniowe: początek + 6 godzin
+         eventEndTime = fromTime + (6 * 60 * 60 * 1000);
+      } else {
+         // Wielodniowe: do końca dnia (23:59:59) ostatniego dnia
+         const toDateObj = new Date(toTime);
+         toDateObj.setHours(23, 59, 59, 999);
+         eventEndTime = toDateObj.getTime();
+      }
+
+      // Czy wydarzenie nadal trwa?
+      const isEventOngoing = eventEndTime > now;
+      
+      // Czy dany użytkownik (zwykły) jest zgłoszony?
+      const isSignedUp = event.user_response_status === "uzupelnione";
+
+      // LOGIKA WIDOCZNOŚCI:
+      // Pokaż, jeśli:
+      // A) Zapisy są otwarte (widzą wszyscy)
+      // B) Wydarzenie wciąż trwa ORAZ (użytkownik jest na nie zapisany LUB użytkownik jest adminem)
+      return isSignupOpen || (isEventOngoing && (isSignedUp || isAdmin));
    });
 
    return (

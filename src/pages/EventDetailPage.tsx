@@ -182,7 +182,7 @@ export default function EventDetailPage() {
                </div>
                <div>
                   <span className="event-card__label">Zapisy do</span>
-                  <p className="detail-hero__date">{formatDate(event.signup_close_date)}</p>
+                  <p className="detail-hero__date">{formatDateAndHour(event.signup_close_date)}</p>
                   <StatusBadge tone={responseTone}>{mapResponseDisplay(responseTone)}</StatusBadge>
                </div>
             </div>
@@ -708,17 +708,32 @@ export default function EventDetailPage() {
 
                {submitMessage ? <p className="page-copy">{submitMessage}</p> : null}
 
-               <button 
-                  className="primary-btn" 
-                  type="submit" 
-                  disabled={isClosed}
-               >
+               <button className="primary-btn" type="submit" disabled={isClosed}>
                   {isClosed ? "Zapisy zakończone" : "Wyślij odpowiedź"}
                </button>
             </form>
          </div>
       </section>
    );
+}
+
+function formatDateAndHour(value?: string | null) {
+   if (!value) {
+      return "Brak danych";
+   }
+
+   const date = new Date(value);
+   if (Number.isNaN(date.getTime())) {
+      return value;
+   }
+
+   return date.toLocaleDateString("pl-PL", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+   });
 }
 
 function formatDate(value?: string | null) {
@@ -735,8 +750,6 @@ function formatDate(value?: string | null) {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
    });
 }
 

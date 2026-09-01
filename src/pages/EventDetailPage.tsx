@@ -182,7 +182,7 @@ export default function EventDetailPage() {
                </div>
                <div>
                   <span className="event-card__label">Zapisy do</span>
-                  <p className="detail-hero__date">{formatDate(event.signup_close_date)}</p>
+                  <p className="detail-hero__date">{formatDateAndHour(event.signup_close_date)}</p>
                   <StatusBadge tone={responseTone}>{mapResponseDisplay(responseTone)}</StatusBadge>
                </div>
             </div>
@@ -196,8 +196,14 @@ export default function EventDetailPage() {
                   {event.type === "training" ? (
                      <div className="page-stack">
                         {/* KAFELKI Z LOGISTYKĄ */}
-                        <div className="detail-list" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", display: "grid", gap: "12px" }}>
-                           
+                        <div
+                           className="detail-list"
+                           style={{
+                              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                              display: "grid",
+                              gap: "12px",
+                           }}
+                        >
                            {/* Zbiórka */}
                            <div className="info-card info-card--muted">
                               <span className="info-card__label">Zbiórka</span>
@@ -205,16 +211,26 @@ export default function EventDetailPage() {
                                  <>
                                     <div className="info-card__value">
                                        {options.meeting_time?.slice(0, 5) || "--:--"}
-                                       {options.meeting_location_desc && <span className="info-card__sub"> • {options.meeting_location_desc}</span>}
+                                       {options.meeting_location_desc && (
+                                          <span className="info-card__sub"> • {options.meeting_location_desc}</span>
+                                       )}
                                     </div>
                                     {options.meeting_location_link && (
-                                       <a href={options.meeting_location_link} target="_blank" rel="noreferrer" className="ghost-btn ghost-btn--small" style={{ marginTop: "4px", width: "fit-content" }}>
+                                       <a
+                                          href={options.meeting_location_link}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          className="ghost-btn ghost-btn--small"
+                                          style={{ marginTop: "4px", width: "fit-content" }}
+                                       >
                                           📍 Pokaż na mapie
                                        </a>
                                     )}
                                  </>
                               ) : (
-                                 <span className="info-card__sub" style={{ fontStyle: "italic", marginTop: "2px" }}>Szczegóły wkrótce...</span>
+                                 <span className="info-card__sub" style={{ fontStyle: "italic", marginTop: "2px" }}>
+                                    Szczegóły wkrótce...
+                                 </span>
                               )}
                            </div>
 
@@ -225,16 +241,26 @@ export default function EventDetailPage() {
                                  <>
                                     <div className="info-card__value">
                                        {options.start_time?.slice(0, 5) || "--:--"}
-                                       {options.start_location_desc && <span className="info-card__sub"> • {options.start_location_desc}</span>}
+                                       {options.start_location_desc && (
+                                          <span className="info-card__sub"> • {options.start_location_desc}</span>
+                                       )}
                                     </div>
                                     {options.start_location_link && (
-                                       <a href={options.start_location_link} target="_blank" rel="noreferrer" className="ghost-btn ghost-btn--small" style={{ marginTop: "4px", width: "fit-content" }}>
+                                       <a
+                                          href={options.start_location_link}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          className="ghost-btn ghost-btn--small"
+                                          style={{ marginTop: "4px", width: "fit-content" }}
+                                       >
                                           📍 Pokaż na mapie
                                        </a>
                                     )}
                                  </>
                               ) : (
-                                 <span className="info-card__sub" style={{ fontStyle: "italic", marginTop: "2px" }}>Szczegóły wkrótce...</span>
+                                 <span className="info-card__sub" style={{ fontStyle: "italic", marginTop: "2px" }}>
+                                    Szczegóły wkrótce...
+                                 </span>
                               )}
                            </div>
 
@@ -245,7 +271,11 @@ export default function EventDetailPage() {
                                  <div className="info-card__row">
                                     <span className="info-card__sub">Typ treningu</span>
                                     <strong style={{ color: "var(--text-h)", fontSize: "0.95rem" }}>
-                                       {options.training_type === 'sprint' ? 'Sprinterski' : options.training_type === 'forest' ? 'Leśny' : (options.training_type || "Brak")}
+                                       {options.training_type === "sprint"
+                                          ? "Sprinterski"
+                                          : options.training_type === "forest"
+                                            ? "Leśny"
+                                            : options.training_type || "Brak"}
                                     </strong>
                                  </div>
                                  <div className="info-card__row">
@@ -259,18 +289,46 @@ export default function EventDetailPage() {
                         </div>
 
                         {/* TRASY */}
-                        <h3 style={{ fontSize: "1.05rem", marginTop: "12px", color: "var(--text-h)" }}>Dostępne trasy</h3>
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "10px" }}>
+                        <h3 style={{ fontSize: "1.05rem", marginTop: "12px", color: "var(--text-h)" }}>
+                           Dostępne trasy
+                        </h3>
+                        <div
+                           style={{
+                              display: "grid",
+                              gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+                              gap: "10px",
+                           }}
+                        >
                            {(options.routes?.length ?? 0) > 0 ? (
                               options.routes?.map((route: any) => (
                                  <div key={route.id} className="info-card" style={{ padding: "14px 16px" }}>
-                                    <strong style={{ color: "var(--color-primary)", fontSize: "1.05rem" }}>{route.name}</strong>
-                                    {route.description && <span className="info-card__sub" style={{ marginTop: "4px", fontSize: "0.85rem" }}>{route.description}</span>}
+                                    <strong style={{ color: "var(--color-primary)", fontSize: "1.05rem" }}>
+                                       {route.name}
+                                    </strong>
+                                    {route.description && (
+                                       <span
+                                          className="info-card__sub"
+                                          style={{ marginTop: "4px", fontSize: "0.85rem" }}
+                                       >
+                                          {route.description}
+                                       </span>
+                                    )}
                                  </div>
                               ))
                            ) : (
-                              <div className="info-card" style={{ borderStyle: "dashed", opacity: 0.6, gridColumn: "1 / -1", textAlign: "center", padding: "16px" }}>
-                                 <span style={{ fontStyle: "italic", fontSize: "0.9rem" }}>Zestawienie tras pojawi się w późniejszym terminie.</span>
+                              <div
+                                 className="info-card"
+                                 style={{
+                                    borderStyle: "dashed",
+                                    opacity: 0.6,
+                                    gridColumn: "1 / -1",
+                                    textAlign: "center",
+                                    padding: "16px",
+                                 }}
+                              >
+                                 <span style={{ fontStyle: "italic", fontSize: "0.9rem" }}>
+                                    Zestawienie tras pojawi się w późniejszym terminie.
+                                 </span>
                               </div>
                            )}
                         </div>
@@ -280,8 +338,14 @@ export default function EventDetailPage() {
                   {event.type === "competition" ? (
                      <div className="page-stack">
                         {/* KAFELKI Z LOGISTYKĄ */}
-                        <div className="detail-list" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", display: "grid", gap: "12px" }}>
-                           
+                        <div
+                           className="detail-list"
+                           style={{
+                              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                              display: "grid",
+                              gap: "12px",
+                           }}
+                        >
                            {/* Wyjazd */}
                            <div className="info-card info-card--muted">
                               <span className="info-card__label">Miejsce wyjazdu</span>
@@ -289,16 +353,26 @@ export default function EventDetailPage() {
                                  <>
                                     <div className="info-card__value">
                                        {options.departure_time?.split("T")[1]?.slice(0, 5) || "--:--"}
-                                       {options.departure_location_desc && <span className="info-card__sub"> • {options.departure_location_desc}</span>}
+                                       {options.departure_location_desc && (
+                                          <span className="info-card__sub"> • {options.departure_location_desc}</span>
+                                       )}
                                     </div>
                                     {options.departure_location_link && (
-                                       <a href={options.departure_location_link} target="_blank" rel="noreferrer" className="ghost-btn ghost-btn--small" style={{ marginTop: "4px", width: "fit-content" }}>
+                                       <a
+                                          href={options.departure_location_link}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          className="ghost-btn ghost-btn--small"
+                                          style={{ marginTop: "4px", width: "fit-content" }}
+                                       >
                                           📍 Pokaż na mapie
                                        </a>
                                     )}
                                  </>
                               ) : (
-                                 <span className="info-card__sub" style={{ fontStyle: "italic", marginTop: "2px" }}>Szczegóły wkrótce...</span>
+                                 <span className="info-card__sub" style={{ fontStyle: "italic", marginTop: "2px" }}>
+                                    Szczegóły wkrótce...
+                                 </span>
                               )}
                            </div>
 
@@ -308,11 +382,15 @@ export default function EventDetailPage() {
                               <div style={{ marginTop: "4px" }}>
                                  <div className="info-card__row">
                                     <span className="info-card__sub">Transport</span>
-                                    <strong style={{ color: "var(--text-h)", fontSize: "0.95rem" }}>{options.transport_available ? "Dostępny" : "Własny"}</strong>
+                                    <strong style={{ color: "var(--text-h)", fontSize: "0.95rem" }}>
+                                       {options.transport_available ? "Dostępny" : "Własny"}
+                                    </strong>
                                  </div>
                                  <div className="info-card__row">
                                     <span className="info-card__sub">Nocleg</span>
-                                    <strong style={{ color: "var(--text-h)", fontSize: "0.95rem" }}>{options.accomodation_available ? "Dostępny" : "Własny"}</strong>
+                                    <strong style={{ color: "var(--text-h)", fontSize: "0.95rem" }}>
+                                       {options.accomodation_available ? "Dostępny" : "Własny"}
+                                    </strong>
                                  </div>
                               </div>
                            </div>
@@ -323,12 +401,16 @@ export default function EventDetailPage() {
                               <div style={{ marginTop: "4px" }}>
                                  <div className="info-card__row">
                                     <span className="info-card__sub">Dostępność</span>
-                                    <strong style={{ color: "var(--text-h)", fontSize: "0.95rem" }}>{options.food_available ? "Tak" : "Brak"}</strong>
+                                    <strong style={{ color: "var(--text-h)", fontSize: "0.95rem" }}>
+                                       {options.food_available ? "Tak" : "Brak"}
+                                    </strong>
                                  </div>
                                  {options.food_available && (
                                     <div className="info-card__row">
                                        <span className="info-card__sub">Opcja wege</span>
-                                       <strong style={{ color: "var(--text-h)", fontSize: "0.95rem" }}>{options.food_vege_available ? "Tak" : "Nie"}</strong>
+                                       <strong style={{ color: "var(--text-h)", fontSize: "0.95rem" }}>
+                                          {options.food_vege_available ? "Tak" : "Nie"}
+                                       </strong>
                                     </div>
                                  )}
                               </div>
@@ -336,25 +418,53 @@ export default function EventDetailPage() {
                         </div>
 
                         {/* BIEGI */}
-                        <h3 style={{ fontSize: "1.05rem", marginTop: "12px", color: "var(--text-h)" }}>Harmonogram startów</h3>
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "10px" }}>
+                        <h3 style={{ fontSize: "1.05rem", marginTop: "12px", color: "var(--text-h)" }}>
+                           Harmonogram startów
+                        </h3>
+                        <div
+                           style={{
+                              display: "grid",
+                              gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+                              gap: "10px",
+                           }}
+                        >
                            {(options.runs?.length ?? 0) > 0 ? (
                               options.runs?.map((run: any) => (
                                  <div key={run.id} className="info-card" style={{ padding: "14px 16px" }}>
-                                    <strong style={{ color: "var(--color-accent)", fontSize: "1.05rem" }}>{run.name}</strong>
-                                    <span className="info-card__sub" style={{ display: "block", marginTop: "4px", fontSize: "0.85rem" }}>
-                                       {run.run_date ? new Date(run.run_date).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long' }) : "Brak daty"}
+                                    <strong style={{ color: "var(--color-accent)", fontSize: "1.05rem" }}>
+                                       {run.name}
+                                    </strong>
+                                    <span
+                                       className="info-card__sub"
+                                       style={{ display: "block", marginTop: "4px", fontSize: "0.85rem" }}
+                                    >
+                                       {run.run_date
+                                          ? new Date(run.run_date).toLocaleDateString("pl-PL", {
+                                               day: "numeric",
+                                               month: "long",
+                                            })
+                                          : "Brak daty"}
                                     </span>
                                  </div>
                               ))
                            ) : (
-                              <div className="info-card" style={{ borderStyle: "dashed", opacity: 0.6, gridColumn: "1 / -1", textAlign: "center", padding: "16px" }}>
-                                 <span style={{ fontStyle: "italic", fontSize: "0.9rem" }}>Lista biegów zostanie opublikowana wkrótce.</span>
+                              <div
+                                 className="info-card"
+                                 style={{
+                                    borderStyle: "dashed",
+                                    opacity: 0.6,
+                                    gridColumn: "1 / -1",
+                                    textAlign: "center",
+                                    padding: "16px",
+                                 }}
+                              >
+                                 <span style={{ fontStyle: "italic", fontSize: "0.9rem" }}>
+                                    Lista biegów zostanie opublikowana wkrótce.
+                                 </span>
                               </div>
                            )}
                         </div>
 
-                        
                         {/* {(options.food_schedule?.length ?? 0) > 0 && (
                            <>
                               <h3 style={{ fontSize: "1.05rem", marginTop: "12px", color: "var(--text-h)" }}>Rozpiska posiłków</h3>
@@ -598,17 +708,32 @@ export default function EventDetailPage() {
 
                {submitMessage ? <p className="page-copy">{submitMessage}</p> : null}
 
-               <button 
-                  className="primary-btn" 
-                  type="submit" 
-                  disabled={isClosed}
-               >
+               <button className="primary-btn" type="submit" disabled={isClosed}>
                   {isClosed ? "Zapisy zakończone" : "Wyślij odpowiedź"}
                </button>
             </form>
          </div>
       </section>
    );
+}
+
+function formatDateAndHour(value?: string | null) {
+   if (!value) {
+      return "Brak danych";
+   }
+
+   const date = new Date(value);
+   if (Number.isNaN(date.getTime())) {
+      return value;
+   }
+
+   return date.toLocaleDateString("pl-PL", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+   });
 }
 
 function formatDate(value?: string | null) {
@@ -621,7 +746,11 @@ function formatDate(value?: string | null) {
       return value;
    }
 
-   return date.toLocaleDateString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric" });
+   return date.toLocaleDateString("pl-PL", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+   });
 }
 
 function mapResponseLabel(value?: string | null) {

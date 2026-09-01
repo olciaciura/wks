@@ -204,7 +204,7 @@ export default function LoginPage({ mode = "login" }: LoginPageProps) {
                      <Link className="ghost-btn" to="/register" style={{ display: "flex", justifyContent: "center" }}>
                         Stwórz nowe konto
                      </Link>
-                     <Link className="ghost-btn" to="/forgot-password" style={{ display: "none", justifyContent: "center" }}>
+                     <Link className="ghost-btn" to="/forgot-password" style={{ display: "flex", justifyContent: "center" }}>
                         Zapomniałeś hasła?
                      </Link>
                   </>

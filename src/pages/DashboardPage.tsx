@@ -66,7 +66,6 @@ export default function DashboardPage() {
 
 // Pobieramy informację, czy użytkownik jest adminem
    // UWAGA: Zmień 'role === "admin"' na takie pole, jakiego używasz w swoim typie User! (np. currentUser?.is_admin)
-   const isAdmin = currentUser?.role === "admin" || currentUser?.role === "trainer";
 
    const visibleEvents = events.filter((event) => {
       const now = Date.now();

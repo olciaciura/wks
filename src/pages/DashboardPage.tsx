@@ -81,7 +81,7 @@ export default function DashboardPage() {
       let eventEndTime: number;
       if (fromTime === toTime) {
          // Jednodniowe: początek + 6 godzin
-         eventEndTime = fromTime + (6 * 60 * 60 * 1000);
+         eventEndTime = fromTime + (24 * 60 * 60 * 1000);
       } else {
          // Wielodniowe: do końca dnia (23:59:59) ostatniego dnia
          const toDateObj = new Date(toTime);

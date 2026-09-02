@@ -80,7 +80,7 @@ export default function DashboardPage() {
 
       let eventEndTime: number;
       if (fromTime === toTime) {
-         // Jednodniowe: początek + 6 godzin
+         // Jednodniowe: początek + 24 godzin
          eventEndTime = fromTime + (24 * 60 * 60 * 1000);
       } else {
          // Wielodniowe: do końca dnia (23:59:59) ostatniego dnia
@@ -91,15 +91,13 @@ export default function DashboardPage() {
 
       // Czy wydarzenie nadal trwa?
       const isEventOngoing = eventEndTime > now;
-      
-      // Czy dany użytkownik (zwykły) jest zgłoszony?
-      const isSignedUp = event.user_response_status === "uzupelnione";
+   
 
       // LOGIKA WIDOCZNOŚCI:
       // Pokaż, jeśli:
       // A) Zapisy są otwarte (widzą wszyscy)
       // B) Wydarzenie wciąż trwa ORAZ (użytkownik jest na nie zapisany LUB użytkownik jest adminem)
-      return isSignupOpen || (isEventOngoing && (isSignedUp || isAdmin));
+      return isSignupOpen || isEventOngoing;
    });
 
    return (

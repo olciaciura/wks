@@ -35,13 +35,10 @@ const DRAG_LOCK_DISTANCE = 8;
 
 function getDaysLeft(dueDate: string) {
    const due = new Date(dueDate);
-   console.log("Due date:", due);
    const now = new Date();
-   console.log("Current date:", now);
    
    // Obliczamy dokładną różnicę czasu w milisekundach
    const diffMs = due.getTime() - now.getTime();
-   console.log("Difference in milliseconds:", diffMs);
    // Dzielimy na dni i zaokrąglamy w górę (Math.ceil)
    return Math.ceil(diffMs / (1000 * 60 )); // minutes left
 }
@@ -91,7 +88,7 @@ export default function EventRow(props: EventDetails) {
       try {
          const payload: any = {
             user_id: userId,
-            status: "REJECTED", // Wielkimi literami
+            status: "rejected", // Wielkimi literami
             needs_transport: false,
             can_take_people: 0,
             comment: ""

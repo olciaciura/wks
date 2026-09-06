@@ -60,7 +60,8 @@ export default function EventRow(props: EventDetails) {
    const openOpacity = dragX > 0 ? Math.min(dragX / OPEN_THRESHOLD, 1) : 0;
    const rejectOpacity = dragX < 0 ? Math.min(-dragX / Math.abs(REJECT_THRESHOLD), 1) : 0;
 
-   const isOrganizer = currentUser?.role === "admin" || currentUser?.role === "trainer";
+   const isAdmin = currentUser?.role === "admin";
+   const isTrainer = currentUser?.role === "trainer";
 
    function goToEvent() {
       navigate(`/events/${props.id}`);
@@ -234,8 +235,9 @@ export default function EventRow(props: EventDetails) {
             </div>
 
             {/* GRUPA PRZYCISKÓW DLA ORGANIZATORA */}
-            {isOrganizer && (
-               <div style={{ display: "flex", gap: "8px", alignItems: "center", marginRight: "-8px" }}>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center", marginRight: "-8px" }}>
+            {isAdmin && (
+               
                   <button
                      type="button"
                      className="event-row-results"
@@ -247,7 +249,9 @@ export default function EventRow(props: EventDetails) {
                   >
                      <GrEdit size={20} />
                   </button>
-
+               
+               )}
+               {(isAdmin || isTrainer) && (
                   <button
                      type="button"
                      className="event-row-results"
@@ -259,9 +263,10 @@ export default function EventRow(props: EventDetails) {
                   >
                      <FiBarChart2 size={22} />
                   </button>
-               </div>
             )}
          </div>
+         
+               </div>
       </div>
    );
 }

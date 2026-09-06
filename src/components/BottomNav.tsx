@@ -32,7 +32,7 @@ export default function BottomNav() {
    }
 
    // WIDOK: TRAINER / ADMIN
-   if (currentUser?.role === "trainer" || currentUser?.role === "admin") {
+   if (currentUser?.role === "admin") {
       return (
          <nav className="bottom-nav" aria-label="Glowna nawigacja">
             <NavLink
@@ -49,6 +49,28 @@ export default function BottomNav() {
             >
                <FiPlus size={24} />
                <span className="bottom-nav__label">Trening</span>
+            </NavLink>
+
+            <NavLink
+               to="/profile"
+               className={({ isActive }) => `bottom-nav__item${isActive ? " is-active" : ""}`}
+            >
+               <FiUser size={24} />
+               <span className="bottom-nav__label">Profil</span>
+            </NavLink>
+         </nav>
+      );
+   }
+
+if (currentUser?.role === "trainer") {
+      return (
+         <nav className="bottom-nav" aria-label="Glowna nawigacja">
+            <NavLink
+               to="/dashboard"
+               className={({ isActive }) => `bottom-nav__item${isActive ? " is-active" : ""}`}
+            >
+               <FiHome size={24} />
+               <span className="bottom-nav__label">Dashboard</span>
             </NavLink>
 
             <NavLink

@@ -632,7 +632,7 @@ export default function EventDetailPage() {
                         </div>
                      </div>
 
-                     {foodChoice === "tak" ? (
+                     {foodChoice === "tak" && options.food_vege_available ? (
                         <div className="field-group">
                            <span className="field-label">Wegetariańskie?</span>
                            <div className="radio-group radio-group--inline">

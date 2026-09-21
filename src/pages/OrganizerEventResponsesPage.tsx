@@ -36,6 +36,7 @@ export default function OrganizerEventResponsesPage() {
    const hasAccommodation = stats && "needs_accommodation" in stats;
    const hasFood = stats && "wants_food" in stats;
    const hasVege = stats && "wants_vege" in stats; // Zakładam, że backend to zwraca, jeśli było wege
+   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"; // Upewnij się, że masz REACT_APP_API_URL w .env
 
    // --- PRZYGOTOWANIE WIERSSZY DO TABELI ---
    // Mapujemy surowe dane z API na płaskie obiekty, żeby łatwo było je sortować i filtrować
@@ -141,6 +142,9 @@ return (
                      {isTraining ? "Odpowiedzi na trening" : "Odpowiedzi na zawody"}
                   </p>
                </div>
+               <a href={`${apiUrl}/events/${data.event.id}/all_responses/excel`} className="btn btn-primary" download>
+                  Eksportuj do Excela
+               </a>
             </header>
 
             {/* ZJEDNOCZONA SIATKA KAFELKÓW - stała, węższa szerokość (150px) bez rozciągania */}

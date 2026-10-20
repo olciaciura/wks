@@ -43,19 +43,8 @@ export default function OrganizerEventResponsesPage() {
    // --- PRZYGOTOWANIE WIERSSZY DO TABELI ---
    const tableRows = useMemo(() => {
       if (!data) return [];
-      
-      // FILTR: Dla zawodów bierzemy TYLKO osoby zgłoszone na co najmniej jeden bieg
-      const activeUsers = data.users.filter((u: any) => {
-         if (isCompetition) {
-            // Zwraca true, jeśli u użytkownika istnieje jakikolwiek bieg z participates: true
-            return u.competition?.runs?.some((r: any) => r.participates);
-         }
-         // Dla treningów zostawiamy wszystkich (lub możesz dodać własną logikę)
-         return true; 
-      });
 
-      // Mapujemy przefiltrowaną listę 'activeUsers' zamiast 'data.users'
-      return activeUsers.map((u: any) => {
+      return data.users.map((u: any) => {
          const transportText = 
             Number(u.can_take_people) > 0 ? `Bierze ${u.can_take_people}` 
             : u.needs_transport ? "Potrzebuje" 
@@ -63,7 +52,7 @@ export default function OrganizerEventResponsesPage() {
 
          const row: Record<string, any> = {
             id: u.user_id,
-            name: u.first_name + " " + u.last_name,
+            name: `${u.first_name ?? ""} ${u.last_name ?? ""}`.trim() || "-",
             category: u.category || "-",
             transport: transportText,
             comment: u.comment || "-",
@@ -76,8 +65,8 @@ export default function OrganizerEventResponsesPage() {
          if (isCompetition) {
             row.accommodation = u.competition?.needs_accommodation ? "Tak" : "Nie";
             row.food = u.competition?.wants_food ? "Tak" : "Nie";
-            row.vege = u.competition?.is_vege ? "Tak" : "Nie";
-            
+            row.vege = u.competition?.wants_vege ? "Tak" : "Nie";
+
             runsList.forEach(runName => {
                const participates = u.competition?.runs?.find((r: any) => r.run_name === runName)?.participates;
                row[`run_${runName}`] = participates ? "Tak" : "Nie";

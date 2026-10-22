@@ -36,25 +36,15 @@ export default function OrganizerEventResponsesPage() {
    const hasAccommodation = stats && "needs_accommodation" in stats;
    const hasFood = stats && "wants_food" in stats;
    const hasVege = stats && "wants_vege" in stats; // Zakładam, że backend to zwraca, jeśli było wege
+   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000"; // Upewnij się, że masz REACT_APP_API_URL w .env
 
    // --- PRZYGOTOWANIE WIERSSZY DO TABELI ---
    // Mapujemy surowe dane z API na płaskie obiekty, żeby łatwo było je sortować i filtrować
    // --- PRZYGOTOWANIE WIERSSZY DO TABELI ---
    const tableRows = useMemo(() => {
       if (!data) return [];
-      
-      // FILTR: Dla zawodów bierzemy TYLKO osoby zgłoszone na co najmniej jeden bieg
-      const activeUsers = data.users.filter((u: any) => {
-         if (isCompetition) {
-            // Zwraca true, jeśli u użytkownika istnieje jakikolwiek bieg z participates: true
-            return u.competition?.runs?.some((r: any) => r.participates);
-         }
-         // Dla treningów zostawiamy wszystkich (lub możesz dodać własną logikę)
-         return true; 
-      });
 
-      // Mapujemy przefiltrowaną listę 'activeUsers' zamiast 'data.users'
-      return activeUsers.map((u: any) => {
+      return data.users.map((u: any) => {
          const transportText = 
             Number(u.can_take_people) > 0 ? `Bierze ${u.can_take_people}` 
             : u.needs_transport ? "Potrzebuje" 
@@ -62,7 +52,7 @@ export default function OrganizerEventResponsesPage() {
 
          const row: Record<string, any> = {
             id: u.user_id,
-            name: u.first_name + " " + u.last_name,
+            name: `${u.first_name ?? ""} ${u.last_name ?? ""}`.trim() || "-",
             category: u.category || "-",
             transport: transportText,
             comment: u.comment || "-",
@@ -75,8 +65,8 @@ export default function OrganizerEventResponsesPage() {
          if (isCompetition) {
             row.accommodation = u.competition?.needs_accommodation ? "Tak" : "Nie";
             row.food = u.competition?.wants_food ? "Tak" : "Nie";
-            row.vege = u.competition?.is_vege ? "Tak" : "Nie";
-            
+            row.vege = u.competition?.wants_vege ? "Tak" : "Nie";
+
             runsList.forEach(runName => {
                const participates = u.competition?.runs?.find((r: any) => r.run_name === runName)?.participates;
                row[`run_${runName}`] = participates ? "Tak" : "Nie";
@@ -141,6 +131,9 @@ return (
                      {isTraining ? "Odpowiedzi na trening" : "Odpowiedzi na zawody"}
                   </p>
                </div>
+               <a href={`${apiUrl}/events/${data.event.id}/all_responses/excel`} className="btn btn-primary" download>
+                  Eksportuj do Excela
+               </a>
             </header>
 
             {/* ZJEDNOCZONA SIATKA KAFELKÓW - stała, węższa szerokość (150px) bez rozciągania */}

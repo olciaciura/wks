@@ -54,7 +54,7 @@ export default function ResetPasswordPage() {
 
             {!token ? (
                <div className="info-card info-card--muted" style={{ textAlign: "center" }}>
-                  <p>Brak tokenu. Otwórz link z konsoli ponownie.</p>
+                  <p>Brak tokenu. Otwórz link z maila ponownie.</p>
                </div>
             ) : (
                <>

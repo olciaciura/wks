@@ -31,13 +31,13 @@ export default function ForgotPasswordPage() {
 
             {isSuccess ? (
                <div className="info-card info-card--success" style={{ textAlign: "center" }}>
-                  <p>Sprawdź konsolę backendu! Wygenerowano tam link do zmiany hasła (udajemy email).</p>
+                  <p>Sprawdź swoją skrzynkę pocztową. Dostaniesz link do zmiany hasła.</p>
                   <Link className="primary-btn" to="/login" style={{ marginTop: "16px" }}>Wróć do logowania</Link>
                </div>
             ) : (
                <>
                   <p className="page-copy" style={{ textAlign: "center", fontSize: "0.9rem" }}>
-                     Podaj email. W konsoli serwera pojawi się link ważny 15 minut.
+                     Podaj email. Jeśli na ten email jest założone konto, dostaniesz link ważny 15 minut.
                   </p>
                   <label className="field-group">
                      <span className="field-label">Email</span>
